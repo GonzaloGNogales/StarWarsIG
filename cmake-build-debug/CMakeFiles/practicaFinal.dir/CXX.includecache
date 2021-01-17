@@ -1078,11 +1078,7 @@ OpenGL/glu.h
 GL/glu.h
 -
 
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.cpp
-Model.h
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.h
-
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.h
+C:/InformaticaGraficaSesiones/Sesiones/StarWarsIG/src/Model.h
 iostream
 -
 vector
@@ -1100,11 +1096,7 @@ assimp/scene.h
 assimp/postprocess.h
 -
 
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.cpp
-Shaders.h
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.h
-
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.h
+C:/InformaticaGraficaSesiones/Sesiones/StarWarsIG/src/Shaders.h
 iostream
 -
 fstream
@@ -1118,15 +1110,17 @@ glm/gtc/type_ptr.hpp
 glm/gtc/matrix_transform.hpp
 -
 
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/main.cpp
+C:/InformaticaGraficaSesiones/Sesiones/StarWarsIG/src/main.cpp
 iostream
 -
 ogl/glew.h
 -
 ogl/freeglut.h
 -
+math.h
+-
 Shaders.h
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.h
+C:/InformaticaGraficaSesiones/Sesiones/StarWarsIG/src/Shaders.h
 Model.h
-C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.h
+C:/InformaticaGraficaSesiones/Sesiones/StarWarsIG/src/Model.h
 
