@@ -1,101 +1,251 @@
 #include <iostream>
 #include <ogl/glew.h>
 #include <ogl/freeglut.h>
+
 #include "Shaders.h"
 #include "Model.h"
+#include "Texture.h"
+
+#include <sstream>
 
 #define I glm::mat4(1.0)
+#define N_MODELS 5
 
+std::string toString(const int &i) {
+    std::stringstream ss;
+    ss << i;
+    return ss.str();
+}
+
+// Textures and Light Functions
+void setLights(glm::mat4 P, glm::mat4 V);
+void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// Model Building Functions
 void funInit();
 void funReshape(int w, int h);
 void funDisplay();
 void cameraZoom(int key, int status, int x, int y);
 void cameraMovement(int x, int y);
+void animateModel(unsigned char key, int x, int y);
+void moveDeathStar (float movement);
+void moveBattleship (float movement);
+void moveXFighter (float movement);
+void moveR2D2(float movement);
+void moveTieFighter(float movement);
 void HologramAutoRotation(int value);
-void moveModel(unsigned char key, int x, int y);
-void moveR2D2(float avanz);
-void moveTieF(float avanz);
-void traslation(int key, int x, int y);
+void modelMovementAndSelection(int key, int x, int y);
 
-
-void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+// Polygon Model Functions Headers
 void drawTriangle(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawTruncPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawHexagone(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawHexagoneR(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawTorus(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawDome(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawCube(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawRectangle(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawMotor(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawRidgedTorus(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawTie_Fighter(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawTie_Fighter_Body(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawTie_Fighter_Window(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawTie_Fighter_Weapon(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawHollowCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawHalfSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawR2D2_Camera(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTruncatedPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// Death Star Model Functions Headers
+void drawDeathStarBottom(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawDeathStarTop(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawDeathStar(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// Battleship Model Functions Headers
+void drawBattleshipFoot(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipJoint(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipCalf(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipTreadAndCalf(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipUnderLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipTread(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipBodyAux(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipBody(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipHead(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleshipUp(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBattleship(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// X-Fighter Model Functions Headers
+void drawXFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawXFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawXFighterEngines(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawXFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// R2D2 Model Functions Headers
+void drawR2D2HollowCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2TruncPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2Camera(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2Head(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2Arm(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2Base(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2Body(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2Top(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// Tie Fighter Model Functions Headers
+void drawTieFighterHexagon(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterWingPanelTriangleNormal(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterWingPanelTriangleLateral(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterWingPanel(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterArmLowerBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterArmUpperBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterArmConnection(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterArm(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighterWeapon(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// Baby Yoda Hologram Model Function Header
+void drawHologramBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
+// Terrain-Scenario Model Functions Headers
+void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
 
  // Shaders variable
     Shaders shaders;
 
  // Model variables
-    Model plane;
-    Model cone;
-    Model cylinder;
-    Model sphere;
-    Model triangle;
-    Model TruncPyramid;
-    Model torus;
-    Model dome;
-    Model cube;
-    Model r2d2;
-    Model ridgedTorus;
-    Model motor;
-    Model hollowCylinder;
-    Model halfSphere;
-    Model bodyR2D2;
-    Model armR2D2;
-    Model wheelR2D2;
-    Model articulationR2D2;
-    Model bbYoda;
+     // Terrain Scenario
+        Model plane;
+
+     // General + common
+        Model sphere;
+        Model cylinder;
+        Model cube;
+        Model triangle;
+        Model halfSphere;
+        Model truncatedPyramid;
+
+     // Death Star
+        Model deathStarBottom;
+        Model deathStarTop;
+
+     // Battleship
+        Model battleshipFoot;
+        Model battleshipJoint;
+        Model battleshipCalf;
+        Model battleshipBodyAux;
+        Model battleshipBody;
+        Model battleshipHead;
+
+     // X-Fighter Wing
+        Model xfighterWing;
+        Model xfighterBody;
+
+     // R2D2
+        Model R2D2;
+        Model R2D2hollowCylinder;
+        Model R2D2Body;
+        Model R2D2Arm;
+        Model R2D2Wheel;
+        Model R2D2Articulation;
+
+     // Tie Fighter
+        Model tieFighterEngine;
+        Model tieFighterWindowStructure;
+
+     // Baby Yoda Hologram
+        Model babyYoda;
+
+ // Texture variables
+    Texture imgNoEmissive;
+    Texture imgTiefWingSpecular;
+    Texture imgTiefWingDiffuse;
+    Texture imgMetallicSpecularTief;
+    Texture imgBodyDiffuseTief;
+    Texture imgWindow;
+
+ // Lights and Materials
+     // Lights
+        #define NLD 1
+        #define NLP 1
+        #define NLF 1
+
+        Light lightG;
+        Light lightD[NLD];
+        Light lightP[NLP];
+        Light lightF[NLF];
+
+     // Materials
+        Material gold;
+        Material ruby;
+        Material polished_bronze;
+        Material cyan;
+        Material emerald;
+
+ // Textures
+    Textures texFloor;
+    Textures texTieFighterWingPanel;
+    Textures texTieFighterBody;
+    Textures texTieFighterWindow;
+    Textures texTieFighterOuterWindow;
+    Textures texLights;
+    Textures texFloorInverse;
 
  // Viewport variables
     int w = 600;
     int h = 600;
 
- // Animation variables
+ // Model camera selection
+    // selectDeathStar -> [0]
+    // selectBattleship -> [1]
+    // selectXFighter -> [2]
+    // selectR2D2 -> [3]
+    // selectTieFighter -> [4]
+    bool selectedModel[N_MODELS];
+
+
+ // Death Star animation variables
+    float deathStarMovX = 0.0;
+    float deathStarMovZ = 0.0;
+    float deathStarMovY = 3.0;
+    float deathStarOrientateY = 0.0;
+    float deathStarOrientateYTOP = 0.0;
+    // float deathStarOrientateXZ = 0.0; -> hablar con Ana
+
+ // Battleship animation variables
+    float battleshipMovX = 0.0;
+    float battleshipMovZ = 0.0;
+    float battleshipOrientateY = 0.0;
+
+ // X-Fighter animation variables
+    float xFighterMovX = 0.0;
+    float xFighterMovZ = 0.0;
+    float xFighterOrientateY = 0.0;
+    float xFighterWingAperture = 15.0;
+
+ // R2D2 animation variables
+    float r2d2MovX = 0.0;
+    float r2d2MovZ = 0.0;
+    float r2d2OrientateY = 0.0;
+    float r2d2TurnHead = 0.0;
+    float r2d2BowBody = 22.0;
+    float r2d2PlaceBody = 0.0;
+
+ // Tie Fighter animation variables
+    float tieFighterMovX = 0.0;
+    float tieFighterMovZ = 0.0;
+    float tieFighterOrientateY = 0.0;
+    float tieFighterWingAperture = 0.0;
+    float tieFighterOrientateVertical = 0.0;
+    float tieFighterFlight = 1.18;
+
+ // Baby Yoda Holo animation variables
     GLint speed = 20;  // 20 ms
-                                //Variables globales para animar el holograma de baby Yoda
-    float levitatingY= 0.875;
-    bool subeHolo=false;
-    float rotatingHolo= 1.0;
-                                //Variables globales para animar a Tie Fighter
-    float aperturaAlasTieF= 0.0;
-    float vueloTieF_Y= 1.18;
-    float avanzaTieF_Z= 0.0;
-    float orientaTieF_Y= 0.0;
-    float avanzaTieF_X= 0.0;
-    float orientaTieF_UpDown=0.0;
+    float holoLevitatingY = 0.875;
+    bool holoUp = false;
+    float holoRotating = 1.0;
 
-
-                                //Variables globales para animar a R2D2
-    float inclinaCuerpoR2D2= 22.0;
-    float colocaCuerpoR2D2= 0.0;
-    float giraCabezaR2D2= 0.0;
-    float avanzaR2D2_X= 0.0;
-    float avanzaR2D2_Z= 0.0;
-    float orientaR2D2_Y= 0.0;
-
-                                //Variables globales para animar la cámara
+ // Camera animation variables
+    float center_x = 0.0;
+    float center_y = 0.0;
+    float center_z = 0.0;
     float zoom = 60.0;
     float alphaX = 0.0;
     float alphaY = 0.0;
+    bool centerAtOrigin = true;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,8 +260,8 @@ int main(int argc, char** argv) {
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(w,h);
-    glutInitWindowPosition(50,50);
-    glutCreateWindow("Práctica Final");
+    glutInitWindowPosition(650,200);
+    glutCreateWindow("Trabajo Final");
 
  // GLEW init
     glewExperimental = GL_TRUE;
@@ -130,12 +280,11 @@ int main(int argc, char** argv) {
  // CallBacks configuration
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
-    glutTimerFunc(speed, HologramAutoRotation, 0);
-    glutKeyboardFunc(moveModel);
-    glutSpecialFunc(traslation);
     glutMouseFunc(cameraZoom);
     glutMotionFunc(cameraMovement);
-
+    glutKeyboardFunc(animateModel);
+    glutSpecialFunc(modelMovementAndSelection);
+    glutTimerFunc(speed, HologramAutoRotation, 0);
 
  // Main loop
     glutMainLoop();
@@ -153,25 +302,108 @@ void funInit() {
     shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
 
  // Models
-    plane.initModel("resources/models/plane.obj");
-    cone.initModel("resources/models/cone.obj");
-    cylinder.initModel("resources/models/cylinder.obj");
-    sphere.initModel("resources/models/sphere.obj");
-    triangle.initModel("resources/models/triangle.obj");
-    r2d2.initModel("resources/models/r2d2.obj");
-    TruncPyramid.initModel("resources/models/Truncated_pyramid.obj");
-    torus.initModel("resources/models/torus.obj");
-    dome.initModel("resources/models/dome.obj");
-    cube.initModel("resources/models/cube.obj");
-    ridgedTorus.initModel("resources/models/Ridged Torus.obj");
-    motor.initModel("resources/models/motor.obj");
-    hollowCylinder.initModel("resources/models/Hollow_Cylinder.obj");
-    halfSphere.initModel("resources/models/Half Sphere.obj");
-    bodyR2D2.initModel("resources/models/bodyR2D2.obj");
-    armR2D2.initModel("resources/models/armR2D2.obj");
-    wheelR2D2.initModel("resources/models/wheelR2D2.obj");
-    articulationR2D2.initModel("resources/models/articulationR2D2.obj");
-    bbYoda.initModel("resources/models/babyYoda.obj");
+    cylinder.initModel("resources/models/Cylinder.obj");
+    sphere.initModel("resources/models/Sphere.obj");
+    triangle.initModel("resources/models/Triangle.obj");
+    cube.initModel("resources/models/Cube.obj");
+    halfSphere.initModel("resources/models/HalfSphere.obj");
+    truncatedPyramid.initModel("resources/models/TruncatedPyramid.obj");
+
+    deathStarBottom.initModel("resources/models/DeathStarUnder.obj");
+    deathStarTop.initModel("resources/models/DeathStarTop.obj");
+
+    battleshipFoot.initModel("resources/models/BattleshipFoot.obj");
+    battleshipJoint.initModel("resources/models/BattleshipJoint.obj");
+    battleshipCalf.initModel("resources/models/BattleshipCalf.obj");
+    battleshipBodyAux.initModel("resources/models/BattleshipBodyAux.obj");
+    battleshipBody.initModel("resources/models/BattleshipBody.obj");
+    battleshipHead.initModel("resources/models/BattleshipHead.obj");
+
+    xfighterWing.initModel("resources/models/XFighterWing.obj");
+    xfighterBody.initModel("resources/models/XFighterBody.obj");
+
+    R2D2.initModel("resources/models/R2D2.obj");
+    R2D2hollowCylinder.initModel("resources/models/HollowCylinder.obj");
+    R2D2Body.initModel("resources/models/R2D2Body.obj");
+    R2D2Arm.initModel("resources/models/R2D2Arm.obj");
+    R2D2Wheel.initModel("resources/models/R2D2Wheel.obj");
+    R2D2Articulation.initModel("resources/models/R2D2Articulation.obj");
+
+    tieFighterEngine.initModel("resources/models/TieFighterEngine.obj");
+    tieFighterWindowStructure.initModel("resources/models/TieFighterWindow.obj");
+
+    babyYoda.initModel("resources/models/BabyYoda.obj");
+
+    plane.initModel("resources/models/Plane.obj");
+
+ // Textures (images)
+    imgNoEmissive.initTexture("resources/textures/img1.png");
+    imgTiefWingDiffuse.initTexture("resources/textures/TiefWingDiffuse.png");
+    imgTiefWingSpecular.initTexture("resources/textures/TiefWingSpecular.png");
+    imgMetallicSpecularTief.initTexture("resources/textures/MetallicSpecular.png");
+    imgBodyDiffuseTief.initTexture("resources/textures/TiefBodyDiffuse.png");
+    imgWindow.initTexture("resources/textures/TiefWindow.png");
+
+ // Materials initializations
+    ruby.ambient = glm::vec4(0.1745f, 0.01175f, 0.01175f, 1.0f);
+    ruby.diffuse = glm::vec4(0.61424f, 0.04136f, 0.04136f, 1.0f);
+    ruby.specular = glm::vec4(0.727811f, 0.626959f, 0.626959f, 1.0f);
+    ruby.emissive = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
+    ruby.shininess = 76.8f;
+
+    texTieFighterWingPanel.diffuse = imgTiefWingDiffuse.getTexture();
+    texTieFighterWingPanel.specular = imgTiefWingSpecular.getTexture();
+    texTieFighterWingPanel.emissive = imgNoEmissive.getTexture();
+    texTieFighterWingPanel.normal = 0;
+    texTieFighterWingPanel.shininess = 10.0;
+
+    texTieFighterBody.diffuse = imgBodyDiffuseTief.getTexture();
+    texTieFighterBody.specular = imgMetallicSpecularTief.getTexture();
+    texTieFighterBody.emissive = imgNoEmissive.getTexture();
+    texTieFighterBody.normal = 0;
+    texTieFighterBody.shininess = 10.0;
+
+    texTieFighterWindow.diffuse = imgWindow.getTexture();
+    texTieFighterWindow.specular = imgMetallicSpecularTief.getTexture();
+    texTieFighterWindow.emissive = imgNoEmissive.getTexture();
+    texTieFighterWindow.normal = 0;
+    texTieFighterWindow.shininess = 10.0;
+
+    texTieFighterOuterWindow.diffuse = imgBodyDiffuseTief.getTexture();
+    texTieFighterOuterWindow.specular = imgMetallicSpecularTief.getTexture();
+    texTieFighterOuterWindow.emissive = imgNoEmissive.getTexture();
+    texTieFighterOuterWindow.normal = 0;
+    texTieFighterOuterWindow.shininess = 10.0;
+
+ // Global Ambient Light
+    lightG.ambient = glm::vec3(0.3, 0.3, 0.3);
+
+ // Directional Lights
+    lightD[0].direction = glm::vec3(0.0, -1.0, 0.0);
+    lightD[0].ambient = glm::vec3( 0.1, 0.1, 0.1);
+    lightD[0].diffuse = glm::vec3( 0.7, 0.7, 0.7);
+    lightD[0].specular = glm::vec3( 0.7, 0.7, 0.7);
+
+ // Positional Lights
+    lightP[0].position = glm::vec3(-1.5,0.2,0.0);
+    lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
+    lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].c0 = 1.00;
+    lightP[0].c1 = 0.22;
+    lightP[0].c2 = 0.20;
+
+ // Focal Lights
+    lightF[0].position = glm::vec3(3.0,  3.0,  4.0);
+    lightF[0].direction = glm::vec3(-3.0, -3.0, -4.0);
+    lightF[0].ambient = glm::vec3(0.2,  0.2,  0.2);
+    lightF[0].diffuse = glm::vec3(0.9,  0.9,  0.9);
+    lightF[0].specular = glm::vec3(0.9,  0.9,  0.9);
+    lightF[0].innerCutOff = 7.75;
+    lightF[0].outerCutOff = lightF[0].innerCutOff + 0.25;
+    lightF[0].c0 = 1.000;
+    lightF[0].c1 = 0.090;
+    lightF[0].c2 = 0.032;
 
 }
 
@@ -209,28 +441,26 @@ void funDisplay() {
     float y = 5.0f*glm::sin(glm::radians(alphaY));
     float z = 5.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
     glm::vec3 pos(x,y,z);
-    glm::vec3 lookat(0.0, 0.0, 0.0);
+    glm::vec3 lookat(center_x, center_y, center_z);
     glm::vec3 up(0.0, 1.0,  0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
 
- // Matrix M1
-    glm::mat4 T1 = glm::translate(I, glm::vec3(2.0, 0.0, 2.0));
-    glm::mat4 R18y_1 = glm::rotate(I, glm::radians(18.0f), glm::vec3(0, 1, 0));
-    glm::mat4 M1 = T1*R18y_1;
-
- // Matrix M2
-    glm::mat4 T2 = glm::translate(I, glm::vec3(1.0, 0.0, 1.0));
-    glm::mat4 R45xz_2 = glm::rotate(I, glm::radians(45.0f), glm::vec3(-1, 0, 1));
-    glm::mat4 R45y_2 = glm::rotate(I, glm::radians(45.0f), glm::vec3(0, 1, 0));
-    glm::mat4 M2 = T2*R45xz_2*R45y_2;
-
 // ------------------------------------------------------------------------------------------------------------------ \\
+
+ // Set Lights
+    setLights(P,V);
 
  // Draw the scene
     drawPlane(P,V,I);
+    drawDeathStar(P,V,I);
+    drawBattleship(P,V,I);
+    drawXFighter(P,V,I);
+
+ // Draw the scene ANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    /*drawPlane(P,V,I);
     glm::mat4 T= glm::translate(I, glm::vec3(avanzaTieF_X, vueloTieF_Y, avanzaTieF_Z));
 
-	
+
     glm::mat4 RtiefY= glm::rotate(I, glm::radians(orientaTieF_Y), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 RtiefUpDown= glm::rotate(I, glm::radians(orientaTieF_UpDown), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R= glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
@@ -238,13 +468,34 @@ void funDisplay() {
 
     glm::mat4 Rr2d2Y= glm::rotate(I, glm::radians(orientaR2D2_Y), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 Tr2d2= glm::translate(I, glm::vec3(avanzaR2D2_X, 0.0, avanzaR2D2_Z));
-    //drawR2D2(P,V,I*Tr2d2*Rr2d2Y);
+    drawR2D2(P,V,I*Tr2d2*Rr2d2Y);
 
-
-    //drawBabyYodaHologram(P,V,I);
+    drawBabyYodaHologram(P,V,I);*/
 
  // Swap buffers
     glutSwapBuffers();
+
+}
+
+
+// ------------------------------------------     Lights and Textures Creation Functions     ----------------------------------------------
+
+void setLights(glm::mat4 P, glm::mat4 V) {
+
+    shaders.setLight("ulightG",lightG);
+    for (int i = 0; i < NLD; i++) shaders.setLight("ulightD["+toString(i)+"]",lightD[i]);
+    for (int i = 0; i < NLP; i++) shaders.setLight("ulightP["+toString(i)+"]",lightP[i]);
+    for (int i = 0; i < NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
+
+    for (int i = 0; i < NLP; i++) {
+        glm::mat4 M = glm::translate(I,lightP[i].position) * glm::scale(I,glm::vec3(0.025));
+        drawObjectTex(sphere,texLights,P,V,M);
+    }
+
+    for (int i = 0; i < NLF; i++) {
+        glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
+        drawObjectTex(sphere,texLights,P,V,M);
+    }
 
 }
 
@@ -257,86 +508,404 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
         model.renderModel(GL_FILL);
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    shaders.setVec3("uColor",glm::vec3(0.75*color[0], 0.75*color[1], 0.75*color[2]));
+    shaders.setVec3("uColor",glm::vec3(0.5*color[0], 0.5*color[1], 0.5*color[2]));
     model.renderModel(GL_LINE);
 
 }
 
+void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
+    shaders.setMat4("uM"  ,M);
+    shaders.setMat4("uPVM",P*V*M);
+    shaders.setBool("uWithMaterials",true);
+    shaders.setMaterial("umaterial",material);
+    model.renderModel(GL_FILL);
+
+}
+
+void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
+    shaders.setMat4("uM"  ,M);
+    shaders.setMat4("uPVM",P*V*M);
+    shaders.setBool("uWithMaterials", false);
+    shaders.setTextures("utextures",textures);
+    if(textures.normal!=0) shaders.setBool("uWithNormals",true);
+    else                   shaders.setBool("uWithNormals",false);
+    model.renderModel(GL_FILL);
+
+}
+
+
 // ----------------------------------------------      Drawing Models Functions     ----------------------------------------------
 
-void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+// ----------------------------------------------            General Polygons             ----------------------------------------------
 
-    glm::mat4 S = glm::scale(I, glm::vec3(2.0, 1.0, 2.0));
-    drawObject(plane,glm::vec3(0.5, 0.5, 0.5),P,V,M*S);
+void drawTriangle(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    drawObjectMat(triangle, ruby,P,V,M);   //This triangle is part of the smaller hexagon of the Tief wing panel
 
 }
 
-void drawTriangle(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(triangle, glm::vec3(0.2,0.2,0.2),P,V,M);
-}
+void drawSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-void drawTriangleR(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(triangle, glm::vec3(0.9,0.9,0.9),P,V,M);
-}
-
-void drawSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M){
     drawObject(sphere, glm::vec3(0.75,0.75,0.75),P,V,M);
+
 }
 
-void drawHalfSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M){
+void drawHalfSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
     drawObject(halfSphere, glm::vec3(0.75,0.75,0.75),P,V,M);
+
 }
 
-void drawCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M){
+void drawCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
     drawObject(cylinder, glm::vec3(0.75,0.75,0.75),P,V,M*T);
+
 }
 
-void drawCube2(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(cube, glm::vec3(1.0,0.0,0.0),P,V,M);
-}
 
-void drawRectangle(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 S= glm::scale(I, glm::vec3(0.5, 1.0, 0.5));
-    drawObject(cube, glm::vec3(0.8,0.8,0.8),P,V,M*S);
-}
+void drawTruncatedPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-void drawTruncPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M){
     glm::mat4 R270= glm::rotate(I, glm::radians(270.0f), glm::vec3(1.0,0.0,0.0));
-    drawObject(TruncPyramid, glm::vec3(1.0,1.0,1.0),P,V,M*R270);
+    drawObjectTex(truncatedPyramid, texTieFighterBody,P,V,M*R270);
+
 }
 
-void drawTorus(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(torus, glm::vec3(0.0,0.3,0.9),P,V,M);
+
+// ----------------------------------------------            Death Star             ----------------------------------------------
+
+void drawDeathStarBottom(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.75, 0.75, 0.75));
+    drawObject(deathStarBottom,glm::vec3(0.8, 0.8, 0.8),P,V,M*S);
+
 }
 
-void drawDome(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(dome, glm::vec3(0.0,0.0,1.0),P,V,M);
+void drawDeathStarTop(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.75, 0.75, 0.75));
+    drawObject(deathStarTop,glm::vec3(0.2, 0.2, 0.2),P,V,M*S);
+
 }
 
-void drawBodyR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(bodyR2D2, glm::vec3(0.8,0.8,0.8),P,V,M);
+void drawDeathStar(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // glm::mat4 R_xz = glm::rotate(I, glm::radians(deathStarOrientateXZ), glm::vec3(1, 0, 0)); -> hablar con Ana
+
+    glm::mat4 R_y = glm::rotate(I, glm::radians(deathStarOrientateY), glm::vec3(0, 1, 0));
+    glm::mat4 R_y_TOP = glm::rotate(I, glm::radians(deathStarOrientateYTOP), glm::vec3(0, 1, 0));
+    glm::mat4 T = glm::translate(I, glm::vec3(deathStarMovX, deathStarMovY, deathStarMovZ));
+    glm::mat4 R90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+    drawDeathStarBottom(P,V,M*T*R_y);
+    drawDeathStarTop(P,V,M*T*R_y_TOP*R_y*R90);
+
 }
 
-void drawMotor(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(motor, glm::vec3(0.0,0.0,0.0),P,V,M);
+
+// ----------------------------------------------            Battleship             ----------------------------------------------
+
+void drawBattleshipFoot(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.9, 0.0));
+    drawObject(battleshipFoot,glm::vec3(0.4, 0, 0.4),P,V,M*S*T);
+
 }
 
-void drawMotorSmall(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(motor, glm::vec3(0.35,0.35,0.35),P,V,M);
+void drawBattleshipJoint(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.7, 0.0));
+    drawObject(battleshipJoint,glm::vec3(0.8, 0.2, 0),P,V,M*S*T);
+
 }
 
-void drawRidgedTorus(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(ridgedTorus, glm::vec3(0.2,0.2,0.2),P,V,M);
+void drawBattleshipCalf(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 5.5, 0.0));
+    glm::mat4 R180_xz = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 1));
+    glm::mat4 R180_x = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 0));
+    drawObject(battleshipCalf,glm::vec3(1, 1, 0),P,V,M*S*T*R180_x*R180_xz);
+
 }
 
-void drawHexagone(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 R180= glm::rotate(I, glm::radians(180.0f), glm::vec3(0.0,0.0,1.0));
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
-    glm::mat4 T2= glm::translate(I, glm::vec3(1.0, 2.0, 0.0));
-    glm::mat4 T3= glm::translate(I, glm::vec3(-1.0, 2.0, 0.0));
-    glm::mat4 T4= glm::translate(I, glm::vec3(1.0, -2.0, 0.0));
-    glm::mat4 T5= glm::translate(I, glm::vec3(-1.0, -2.0, 0.0));
+void drawBattleshipTread(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0, 1, 0));
+    drawBattleshipFoot(P,V,M);
+    drawBattleshipJoint(P,V,M);
+    drawBattleshipJoint(P,V,M*R90);
+
+}
+
+void drawBattleshipTreadAndCalf(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    drawBattleshipTread(P,V,M);
+    drawBattleshipCalf(P,V,M);
+
+}
+
+void drawBattleshipUnderLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
+    drawBattleshipTreadAndCalf(P,V,M);
+    drawBattleshipJoint(P,V,M*T);
+
+}
+
+void drawBattleshipLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 T_calf = glm::translate(I, glm::vec3(0.0, 3.0, 0.0));
+    glm::mat4 R180_x = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 0));
+    glm::mat4 T_joint = glm::translate(I, glm::vec3(0.0, 2.0, 0.0));
+    glm::mat4 S = glm::scale(I, glm::vec3(1.5, 0.9, 1.5));
+    drawBattleshipUnderLeg(P,V,M);
+    drawBattleshipCalf(P,V,M*T_calf*R180_x);
+    drawBattleshipJoint(P,V,M*T_joint*S);
+
+}
+
+void drawBattleshipBodyAux(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.485, 0.485, 0.485));
+    drawObject(battleshipBodyAux,glm::vec3(0, 0, 1),P,V,M*S);
+
+}
+
+void drawBattleshipBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
+    drawObject(battleshipBody,glm::vec3(1, 0, 0),P,V,M*S);
+
+}
+
+void drawBattleshipHead(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
+    glm::mat4 R90_y = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+    glm::mat4 T_y = glm::translate(I, glm::vec3(0.0, -0.3, 0.0));
+    drawObject(battleshipHead,glm::vec3(1, 1, 1),P,V,M*T_y*S*R90_y);
+
+}
+
+void drawBattleshipUp(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 T_front = glm::translate(I, glm::vec3(0.0, 0.0, -1.0));
+    glm::mat4 T_back = glm::translate(I, glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 T_head = glm::translate(I, glm::vec3(0.0, 0.0, 2.0));
+    glm::mat4 R180_y = glm::rotate(I, glm::radians(180.0f), glm::vec3(0, 1, 0));
+    drawBattleshipBodyAux(P,V,M*T_front);
+    drawBattleshipBodyAux(P,V,M*T_back*R180_y);
+    drawBattleshipBody(P,V,M);
+    drawBattleshipHead(P,V,M*T_head);
+
+}
+
+void drawBattleship(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 T = glm::translate(I, glm::vec3(battleshipMovX, 0.0, battleshipMovZ));
+    glm::mat4 R_y = glm::rotate(I, glm::radians(battleshipOrientateY), glm::vec3(0, 1, 0));
+
+    glm::mat4 T_up = glm::translate(I, glm::vec3(0.0, 3.1, 0.0));
+    glm::mat4 R90_y = glm::rotate(I, glm::radians(90.0f), glm::vec3(0, 1, 0));
+
+    glm::mat4 T_leg1 = glm::translate(I, glm::vec3(1.15, 0.0, 0.55));
+    glm::mat4 T_leg2 = glm::translate(I, glm::vec3(1.15, 0.0, -0.55));
+    glm::mat4 T_leg3 = glm::translate(I, glm::vec3(-1.15, 0.0, 0.55));
+    glm::mat4 T_leg4 = glm::translate(I, glm::vec3(-1.15, 0.0, -0.55));
+
+    drawBattleshipUp(P,V,M*T*R_y*T_up);
+    drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg1);
+    drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg2);
+    drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg3);
+    drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg4);
+
+}
+
+
+// ----------------------------------------------            X-Fighter Wing             ----------------------------------------------
+
+void drawXFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 R90_y = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+    glm::mat4 T = glm::translate(I, glm::vec3(1.65, 0.15, -2.0));
+    drawObject(xfighterWing,glm::vec3(1, 0.5, 0),P,V,M*T*R90_y);
+
+}
+
+void drawXFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
+    drawObject(xfighterBody,glm::vec3(0.8, 0, 0.5),P,V,M*S);
+
+}
+
+void drawXFighterEngines(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 R = glm::rotate(I, glm::radians(xFighterWingAperture), glm::vec3(0, 0, 1));
+    glm::mat4 S_upper_left = glm::scale(I, glm::vec3(-0.8, 0.8, 0.8));
+    glm::mat4 S_upper_right = glm::scale(I, glm::vec3(0.8, 0.8, 0.8));
+    glm::mat4 S_under_left = glm::scale(I, glm::vec3(-0.8, -0.8, 0.8));
+    glm::mat4 S_under_right = glm::scale(I, glm::vec3(0.8, -0.8, 0.8));
+    drawXFighterWing(P,V,M*S_upper_left*R);
+    drawXFighterWing(P,V,M*S_upper_right*R);
+    drawXFighterWing(P,V,M*S_under_left*R);
+    drawXFighterWing(P,V,M*S_under_right*R);
+
+}
+
+void drawXFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 R = glm::rotate(I, glm::radians(xFighterOrientateY), glm::vec3(0, 1, 0));
+    glm::mat4 T = glm::translate(I, glm::vec3(xFighterMovX, 2.5, xFighterMovZ));
+    drawXFighterEngines(P,V,M*T*R);
+    drawXFighterBody(P,V,M*T*R);
+
+}
+
+
+// ----------------------------------------------         R2D2        ----------------------------------------------
+
+void drawR2D2HollowCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    drawObject(R2D2hollowCylinder, glm::vec3(0.2,0.2,0.2),P,V,M);
+
+}
+
+void drawR2D2TruncPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 R270 = glm::rotate(I, glm::radians(270.0f), glm::vec3(1.0,0.0,0.0));
+    drawObjectTex(truncatedPyramid, texTieFighterBody,P,V,M*R270);
+
+}
+
+void drawR2D2Camera(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // Camera sphere eye transformation matrix
+    glm::mat4 SSmall = glm::scale(I, glm::vec3(0.07125, 0.07125, 0.07125));
+    glm::mat4 Tsmall = glm::translate(I, glm::vec3(0.0, 0.0, -0.075));
+    drawSphere(P,V,M*Tsmall*SSmall);
+
+    // Camera cylindrical base transformation matrix
+    glm::mat4 SC = glm::scale(I, glm::vec3(0.05625, 0.05625, 0.07125));
+    glm::mat4 TC = glm::translate(I, glm::vec3(0.0, 0.0, -0.30));
+
+    drawR2D2HollowCylinder(P,V,M*TC*SC);
+
+    // Camera sphere base transformation matrix
+    glm::mat4 SBig = glm::scale(I, glm::vec3(0.1875, 0.1875, 0.1875));
+    glm::mat4 Tbig = glm::translate(I, glm::vec3(0.0, 0.0, -0.325));
+
+    drawSphere(P,V,M*Tbig*SBig);
+
+}
+
+void drawR2D2Head(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // Head (principal model)
+    glm::mat4 SHS = glm::scale(I, glm::vec3(1.5, 1.7, 1.5));
+    glm::mat4 THS = glm::translate(I, glm::vec3(3.0, 0.0, 3.0));
+
+    drawHalfSphere(P,V,M*THS*SHS);
+
+    glm::mat4 TCfrontal = glm::translate(I, glm::vec3(0.55, 0.6, 1.55));
+    glm::mat4 R15 = glm::rotate(I, glm::radians(15.0f), glm::vec3(0.0,1.0,0.0));
+
+    drawR2D2Camera(P,V,M*TCfrontal*R15);
+
+    glm::mat4 TCupper = glm::translate(I, glm::vec3(0.55, 1.8, -0.55));
+    glm::mat4 R100 = glm::rotate(I, glm::radians(100.0f), glm::vec3(-1.0,0.0,0.0));
+
+    drawR2D2Camera(P,V,M*TCupper*R100);
+
+    glm::mat4 TCback = glm::translate(I, glm::vec3(-0.55, 0.6, -1.6));
+    glm::mat4 R175 = glm::rotate(I, glm::radians(175.0f), glm::vec3(0.0,-1.0,0.0));
+
+    drawR2D2Camera(P,V,M*TCback*R175);
+
+    glm::mat4 STP = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
+    glm::mat4 TTP = glm::translate(I, glm::vec3(0.0, 0.7, 0.7));
+    glm::mat4 R60 = glm::rotate(I, glm::radians(60.0f), glm::vec3(1.0,0.0,0.0));
+
+    drawR2D2TruncPyramid(P,V,M*TTP*R60*STP);
+
+}
+
+void drawR2D2Arm(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.7, 0.1225));
+    drawObject(R2D2Arm, glm::vec3(0.0,0.3,0.9),P,V,M*T);
+    drawObject(R2D2Wheel, glm::vec3(0.0,0.3,0.9),P,V,M);
+
+}
+
+void drawR2D2Base(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, -0.8));
+
+    glm::mat4 RBow = glm::rotate(I, glm::radians((float)(r2d2BowBody-22.0)), glm::vec3(-1.0,0.0,0.0));
+    glm::mat4 TPlace = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody));    // Sirve para colocar el "palo" que va unido a la base.
+    drawObject(R2D2Articulation, glm::vec3(0.0,0.3,0.9),P,V,M*TPlace*RBow*T);
+    drawObject(R2D2Wheel, glm::vec3(0.0,0.3,0.9),P,V,M);
+
+}
+
+void drawR2D2Body(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    drawObject(R2D2Body, glm::vec3(0.8,0.8,0.8),P,V,M);
+
+}
+
+void drawR2D2Top(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 TH = glm::translate(I, glm::vec3(0.0, 0.82, 0.1));
+    glm::mat4 SH = glm::scale(I, glm::vec3(0.16, 0.14, 0.16));
+    glm::mat4 RH = glm::rotate(I,glm::radians(r2d2TurnHead), glm::vec3(0.0, 1.0, 0.0));        // Rotamos la cabeza de R2D2
+
+    drawR2D2Head(P,V,M*TH*RH*SH);
+
+    glm::mat4 TB = glm::translate(I, glm::vec3(0.0, 0.25, 0.095));
+    glm::mat4 SB = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+
+    drawR2D2Body(P,V,M*TB*SB);
+
+}
+
+void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 RBow = glm::rotate(I, glm::radians(r2d2BowBody), glm::vec3(-1.0,0.0,0.0));
+    glm::mat4 TPlacement = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody));
+    drawR2D2Top(P,V,M*TPlacement*RBow);
+
+    glm::mat4 TSpecialPlacement = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody/1.5));    // Sirve para terminar de colocar la rueda del centro y que no quede más atrás
+    glm::mat4 SBase = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+    drawR2D2Base(P,V,M*TSpecialPlacement*SBase);
+
+    glm::mat4 SArm = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+    glm::mat4 TArm = glm::translate(I, glm::vec3(0.28, 0.0, -0.2));
+    drawR2D2Arm(P,V,M*TArm*SArm);
+
+    glm::mat4 SArmInverse= glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
+    drawR2D2Arm(P,V,M*SArmInverse*TArm*SArm);
+
+}
+
+
+// ----------------------------------------------         Tie Fighter         ----------------------------------------------
+
+void drawTieFighterHexagon(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 R180 = glm::rotate(I, glm::radians(180.0f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
+    glm::mat4 T2 = glm::translate(I, glm::vec3(1.0, 2.0, 0.0));
+    glm::mat4 T3 = glm::translate(I, glm::vec3(-1.0, 2.0, 0.0));
+    glm::mat4 T4 = glm::translate(I, glm::vec3(1.0, -2.0, 0.0));
+    glm::mat4 T5 = glm::translate(I, glm::vec3(-1.0, -2.0, 0.0));
 
     drawTriangle(P,V,M*T);
     drawTriangle(P,V,M*T2*T);
@@ -347,395 +916,231 @@ void drawHexagone(glm::mat4 P, glm::mat4 V, glm::mat4 M){
 
 }
 
-void drawTie_Fighter_Ala_Panel_TriangleNormal(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Scube= glm::scale(I, glm::vec3(1.05, 0.05, 0.05));
-    glm::mat4 Tcube= glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
+void drawTieFighterWingPanelTriangleNormal(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawCube2(P,V,M*Tcube*Scube);
-    drawTriangleR(P,V,M);
-}
+    glm::mat4 Scube = glm::scale(I, glm::vec3(1.05, 0.05, 0.05));
+    glm::mat4 Tcube = glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
+    drawObjectTex(cube, texTieFighterBody,P,V,M*Tcube*Scube);   // It turns into a rectangle that's going to be the border of the wing structure
 
-void drawTie_Fighter_Ala_Panel_TriangleLateral(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Slateral= glm::scale(I, glm::vec3(1.15, 0.05, 0.05));
-    glm::mat4 R65= glm::rotate(I, glm::radians(65.0f), glm::vec3(0.0,0.0,-1.0));
-    glm::mat4 Tcube= glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
-
-    drawCube2(P,V,M*Tcube*R65*Slateral);
-    drawTriangleR(P,V,M);
-}
-
-void drawTie_Fighter_Ala_Panel(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 R45= glm::rotate(I, glm::radians(53.5f), glm::vec3(0.0,0.0,1.0));
-    glm::mat4 R180= glm::rotate(I, glm::radians(180.0f), glm::vec3(0.0,0.0,1.0));
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, -1, 0.0));
-    glm::mat4 T2= glm::translate(I, glm::vec3(1.0, 2.0, 0.0));
-    glm::mat4 T5= glm::translate(I, glm::vec3(-1.0, -2.0, 0.0));
-    glm::mat4 SinverseX= glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
-
-    glm::mat4 RaperturaAbajo= glm::rotate(I, glm::radians(aperturaAlasTieF), glm::vec3(1.0, 0.0, 0.0));
-    glm::mat4 RaperturaArriba= glm::rotate(I, glm::radians(-aperturaAlasTieF), glm::vec3(1.0, 0.0, 0.0));
-
-    //Parte de abajo
-    drawTie_Fighter_Ala_Panel_TriangleNormal(P,V,M*RaperturaAbajo*T);
-    drawTie_Fighter_Ala_Panel_TriangleLateral(P,V,M*RaperturaArriba*T2*T);
-    drawTie_Fighter_Ala_Panel_TriangleLateral(P,V,M*RaperturaArriba*SinverseX*T2*T);
-
-    //Parte de arriba
-    drawTie_Fighter_Ala_Panel_TriangleNormal(P,V,M*RaperturaArriba*R180*T);
-    drawTie_Fighter_Ala_Panel_TriangleLateral(P,V,M*RaperturaAbajo*SinverseX*T5*R180*T);
-    drawTie_Fighter_Ala_Panel_TriangleLateral(P,V,M*RaperturaAbajo*T5*R180*T);
+    drawObjectTex(triangle, texTieFighterWingPanel,P,V,M);    // This triangle is part of the Tie Fighter's wing pannels
 
 }
 
-void drawTie_Fighter_Ala(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Ssmall= glm::scale(I, glm::vec3(0.05, 0.05, 0.05));
-    glm::mat4 Sbig= glm::scale(I, glm::vec3(0.5, 0.575, 0.5));
+void drawTieFighterWingPanelTriangleLateral(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawHexagone(P,V,M*Ssmall);
-    drawTie_Fighter_Ala_Panel(P,V,M*Sbig);
-}
+    glm::mat4 Slateral = glm::scale(I, glm::vec3(1.15, 0.05, 0.05));
+    glm::mat4 R65 = glm::rotate(I, glm::radians(65.0f), glm::vec3(0.0,0.0,-1.0));
+    glm::mat4 Tcube = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
+    drawObjectTex(cube, texTieFighterBody,P,V,M*Tcube*R65*Slateral);    // It turns into a rectangle that's going to be the border of the wing structure
 
-void drawTie_Fighter_Body(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 SS= glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
-    drawSphere(P,V,M*SS);
-
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, 0.0, -0.4));
-    glm::mat4 R90Y= glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,-1.0,0.0));
-    drawTie_Fighter_Window(P,V,M*R90Y*T);
+    drawObjectTex(triangle, texTieFighterWingPanel,P,V,M);    // This triangle is part of the Tie Fighter's wing pannels
 
 }
 
-void drawTie_Fighter_Window(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 S= glm::scale(I, glm::vec3(0.005, 0.002, 0.005));
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, 0.3, 0.0));
-    glm::mat4 R90X= glm::rotate(I, glm::radians(90.0f), glm::vec3(-1.0,0.0,0.0));
-    drawDome(P,V,M*T*R90X*S);
+void drawTieFighterWingPanel(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 ST= glm::scale(I, glm::vec3(0.3, 0.5, 0.3));
-    glm::mat4 TT= glm::translate(I, glm::vec3(0.0, 0.0, 0.12));
-    drawTorus(P,V,M*TT*R90X*ST);
-}
+    glm::mat4 R45 = glm::rotate(I, glm::radians(53.5f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 R180 = glm::rotate(I, glm::radians(180.0f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, -1, 0.0));
+    glm::mat4 T2 = glm::translate(I, glm::vec3(1.0, 2.0, 0.0));
+    glm::mat4 T5 = glm::translate(I, glm::vec3(-1.0, -2.0, 0.0));
+    glm::mat4 SinverseX = glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
 
-void drawTie_Fighter_ArmP1(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 S= glm::scale(I, glm::vec3(0.08, 0.075, 0.08));
-    glm::mat4 S2= glm::scale(I, glm::vec3(0.05, 0.075, 0.12));
+    // Animation
+    glm::mat4 RDownAperture = glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 RUpperAperture = glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
 
-    drawTruncPyramid(P,V,M*S);
-    drawTruncPyramid(P,V,M*S2);
-}
+    // Lower part of the hexagon
+    drawTieFighterWingPanelTriangleNormal(P, V, M * RDownAperture * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RUpperAperture * T2 * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RUpperAperture * SinverseX * T2 * T);
 
-void drawTie_Fighter_ArmP2(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Ttop= glm::translate(I, glm::vec3(0.0, 0.15, 0.0));
-    glm::mat4 Stop= glm::scale(I, glm::vec3(0.5, 1.2, 0.5));
-
-    drawTie_Fighter_ArmP1(P, V, M);
-    drawTie_Fighter_ArmP1(P, V, M*Ttop*Stop);
-}
-
-void drawTie_Fighter_ArmP3(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Sbottom= glm::scale(I, glm::vec3(0.045, 0.25, 0.045));
-    glm::mat4 Stop= glm::scale(I, glm::vec3(0.085, 0.015, 0.085));
-    glm::mat4 Ttop= glm::translate(I, glm::vec3(0.0, 0.5, 0.0));
-
-    drawCylinder(P,V,M*Sbottom);
-    drawCylinder(P,V,M*Ttop*Stop);
-    drawTie_Fighter_ArmP2(P, V, M);
-    drawTie_Fighter_ArmP2(P, V, M);
-}
-
-void drawTie_Fighter_Arm(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 R90= glm::rotate(I, glm::radians(90.0f), glm::vec3(1.0,0.0,0.0));
-    glm::mat4 TAla= glm::translate(I, glm::vec3(0.0, 0.53, 0.0));
-
-    drawTie_Fighter_ArmP3(P,V,M);
-    drawTie_Fighter_Ala(P,V,M*TAla*R90);
+    // Upper part of the hexagon
+    drawTieFighterWingPanelTriangleNormal(P, V, M * RUpperAperture * R180 * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RDownAperture * SinverseX * T5 * R180 * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RDownAperture * T5 * R180 * T);
 
 }
 
-void drawTie_Fighter_Motor(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 RY90= glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
-    glm::mat4 S= glm::scale(I, glm::vec3(0.025, 0.05, 0.05));
-    glm::mat4 TMotor= glm::translate(I, glm::vec3(-0.25, 0.0, 0.0));
+void drawTieFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawMotor(P,V,M*TMotor*S*RY90);
+    glm::mat4 Ssmall = glm::scale(I, glm::vec3(0.05, 0.05, 0.05));
+    glm::mat4 Sbig = glm::scale(I, glm::vec3(0.5, 0.575, 0.5));
 
-    glm::mat4 RYN180= glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,-1.0,0.0));
-    glm::mat4 SS= glm::scale(I, glm::vec3(0.025, 0.025, 0.025));
-    glm::mat4 T= glm::translate(I, glm::vec3(-0.58, 0.0, 0.0));
-
-    drawMotorSmall(P,V,M*T*SS*RYN180);
-
-    glm::mat4 TT= glm::translate(I, glm::vec3(-3.0, -0.5, -2.0));    //Centrado en -2.-0.5.-2
-    glm::mat4 ST= glm::scale(I, glm::vec3(0.4, 0.6, 0.6));
-
-    drawRidgedTorus(P,V,M*ST*TT);
-}
-
-void drawTie_Fighter_Weapon(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 SR= glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
-    glm::mat4 TR= glm::translate(I, glm::vec3(0.0, 1.5, 0.0));
-
-    drawRectangle(P,V,M);
-    drawRectangle(P,V,M*TR*SR);
-
-    glm::mat4 SC= glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
-    glm::mat4 TC= glm::translate(I, glm::vec3(0.0, 2.25, 0.0));
-
-    drawCube2(P,V,M*TC*SC);
-}
-
-void drawTie_Fighter(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 RL90= glm::rotate(I, glm::radians(-90.0f), glm::vec3(1.0,0.0,0.0));
-    glm::mat4 TLArm= glm::translate(I, glm::vec3(0.0, 0.0, -0.43));
-    glm::mat4 Sinverse= glm::scale(I, glm::vec3(1.0, 1.0, -1.0));
-
-    drawTie_Fighter_Arm(P,V,M*TLArm*RL90);
-    drawTie_Fighter_Body(P,V,M);
-    drawTie_Fighter_Arm(P,V,M*Sinverse*TLArm*RL90);
-
-    glm::mat4 SM= glm::scale(I, glm::vec3(0.75, 0.95, 0.95));
-    glm::mat4 TM= glm::translate(I, glm::vec3(-0.125, 0.0, 0.0));
-
-    drawTie_Fighter_Motor(P,V,M*TM*SM);
-
-    glm::mat4 SW= glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
-    glm::mat4 RW90= glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,0.0,-1.0));
-    glm::mat4 TW= glm::translate(I, glm::vec3(0.25, -0.35, 0.25));
-
-    drawTie_Fighter_Weapon(P,V,M*TW*SW*RW90);
-    drawTie_Fighter_Weapon(P,V,M*Sinverse*TW*SW*RW90);
-    //Para que esté arriba: glm::mat4 T= glm::translate(I, glm::vec3(0.0, 1.15, 0.0));
-}
-
-// ___________________________________________________________    R2D2    ___________________________________________________________ //
-
-void drawHollowCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    drawObject(hollowCylinder, glm::vec3(0.2,0.2,0.2),P,V,M);
-}
-
-void drawR2D2_Camera(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 SC= glm::scale(I, glm::vec3(0.05625, 0.05625, 0.07125));
-    glm::mat4 TC= glm::translate(I, glm::vec3(0.0, 0.0, -0.30));
-
-    drawHollowCylinder(P,V,M*TC*SC);
-
-    glm::mat4 SSmall= glm::scale(I, glm::vec3(0.07125, 0.07125, 0.07125));
-    glm::mat4 Tsmall= glm::translate(I, glm::vec3(0.0, 0.0, -0.075));
-    drawSphere(P,V,M*Tsmall*SSmall);
-
-    glm::mat4 SBig= glm::scale(I, glm::vec3(0.1875, 0.1875, 0.1875));
-    glm::mat4 Tbig= glm::translate(I, glm::vec3(0.0, 0.0, -0.325));
-
-    drawSphere(P,V,M*Tbig*SBig);
-}
-
-void drawR2D2_Head(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 SHS= glm::scale(I, glm::vec3(1.5, 1.7, 1.5));
-    glm::mat4 THS= glm::translate(I, glm::vec3(3.0, 0.0, 3.0));
-
-    drawHalfSphere(P,V,M*THS*SHS);
-
-    glm::mat4 TCfrontal= glm::translate(I, glm::vec3(0.55, 0.6, 1.55));
-    glm::mat4 R15= glm::rotate(I, glm::radians(15.0f), glm::vec3(0.0,1.0,0.0));
-
-    drawR2D2_Camera(P,V,M*TCfrontal*R15);
-
-    glm::mat4 TCupper= glm::translate(I, glm::vec3(0.55, 1.8, -0.55));
-    glm::mat4 R100= glm::rotate(I, glm::radians(100.0f), glm::vec3(-1.0,0.0,0.0));
-
-    drawR2D2_Camera(P,V,M*TCupper*R100);
-
-    glm::mat4 TCback= glm::translate(I, glm::vec3(-0.55, 0.6, -1.6));
-    glm::mat4 R175= glm::rotate(I, glm::radians(175.0f), glm::vec3(0.0,-1.0,0.0));
-
-    drawR2D2_Camera(P,V,M*TCback*R175);
-
-    glm::mat4 STP= glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
-    glm::mat4 TTP= glm::translate(I, glm::vec3(0.0, 0.7, 0.7));
-    glm::mat4 R60= glm::rotate(I, glm::radians(60.0f), glm::vec3(1.0,0.0,0.0));
-
-    drawTruncPyramid(P,V,M*TTP*R60*STP);
-}
-
-void drawR2D2_Arm(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, 0.7, 0.1225));
-    drawObject(armR2D2, glm::vec3(0.0,0.3,0.9),P,V,M*T);
-    drawObject(wheelR2D2, glm::vec3(0.0,0.3,0.9),P,V,M);
-}
-
-void drawR2D2_Base(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, 0.0, -0.8));
-
-    glm::mat4 Rinclinacion= glm::rotate(I, glm::radians((float)(inclinaCuerpoR2D2-22.0)), glm::vec3(-1.0,0.0,0.0));
-    glm::mat4 Tcolocacion= glm::translate(I, glm::vec3(0.0, 0.0, colocaCuerpoR2D2));    //Sirve para colocar el "palo" que va unido a la base.
-    drawObject(articulationR2D2, glm::vec3(0.0,0.3,0.9),P,V,M*Tcolocacion*Rinclinacion*T);
-    drawObject(wheelR2D2, glm::vec3(0.0,0.3,0.9),P,V,M);
-}
-
-void drawR2D2_Top(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 TH= glm::translate(I, glm::vec3(0.0, 0.82, 0.1));
-    glm::mat4 SH= glm::scale(I, glm::vec3(0.16, 0.14, 0.16));
-    glm::mat4 RH= glm::rotate(I,glm::radians(giraCabezaR2D2), glm::vec3(0.0, 1.0, 0.0));        //Rotamos la cabeza de R2D2
-
-    drawR2D2_Head(P,V,M*TH*RH*SH);
-
-    glm::mat4 TB= glm::translate(I, glm::vec3(0.0, 0.25, 0.095));
-    glm::mat4 SB= glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
-
-    drawBodyR2D2(P,V,M*TB*SB);
-}
-
-void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Rinclinacion= glm::rotate(I, glm::radians(inclinaCuerpoR2D2), glm::vec3(-1.0,0.0,0.0));
-    glm::mat4 Tcolocacion= glm::translate(I, glm::vec3(0.0, 0.0, colocaCuerpoR2D2));
-    drawR2D2_Top(P,V,M*Tcolocacion*Rinclinacion);
-
-    glm::mat4 TcolocacionEspecial= glm::translate(I, glm::vec3(0.0, 0.0, colocaCuerpoR2D2/1.5));    //Sirve para terminar de colocar la rueda del centro y que no quede más atrás
-    glm::mat4 SBase= glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
-    drawR2D2_Base(P,V,M*TcolocacionEspecial*SBase);
-
-    glm::mat4 SArm= glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
-    glm::mat4 TArm= glm::translate(I, glm::vec3(0.28, 0.0, -0.2));
-    drawR2D2_Arm(P,V,M*TArm*SArm);
-
-    glm::mat4 SArmInverse= glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
-    drawR2D2_Arm(P,V,M*SArmInverse*TArm*SArm);
-}
-
-void moveModel(unsigned char key, int x, int y){
-    switch (key) {
-        case 'o':
-            orientaR2D2_Y += 5;
-            break;
-        case 'O':
-            orientaR2D2_Y -= 5;
-            break;
-        case 'h':
-            if (giraCabezaR2D2 < 90) giraCabezaR2D2 += 3;
-            break;
-        case 'H':
-            if (giraCabezaR2D2 > -90) giraCabezaR2D2 -= 3;
-            break;
-        case 'c':
-            if (inclinaCuerpoR2D2 < 22 && inclinaCuerpoR2D2 >= 0){
-                inclinaCuerpoR2D2 += 2;
-                colocaCuerpoR2D2 += 0.025;
-            }
-            break;
-        case 'C':
-            if (inclinaCuerpoR2D2 <= 22 && inclinaCuerpoR2D2 > 0){
-                inclinaCuerpoR2D2 -= 2;
-                colocaCuerpoR2D2 -= 0.025;
-            }
-            break;
-        case 't':
-            orientaTieF_Y += 5;
-            break;
-        case 'T':
-            orientaTieF_Y -= 5;
-            break;
-        case 'y':
-            orientaTieF_UpDown += 5;
-            break;
-        case 'Y':
-            orientaTieF_UpDown -= 5;
-            break;
-        case 'a':
-            if (aperturaAlasTieF < 65) aperturaAlasTieF += 3;
-            break;
-        case 'A':
-            if (aperturaAlasTieF > 0) aperturaAlasTieF -= 3;
-            break;
-        default:
-            break;
-    }
-    glutPostRedisplay();
-}
-void traslation(int key, int x, int y){
-    switch (key) {
-        case GLUT_KEY_UP:
-            moveR2D2(0.05);
-            vueloTieF_Y+= 0.05;
-            break;
-        case GLUT_KEY_DOWN:
-            moveR2D2(-0.05);
-            vueloTieF_Y-= 0.05;
-            break;
-        case GLUT_KEY_RIGHT:
-            moveTieF(0.05);
-            break;
-        case GLUT_KEY_LEFT:
-            moveTieF(-0.05);
-            break;
-        default:
-            break;
-    }
-    glutPostRedisplay();
-}
-
-
-void moveR2D2(float avanz){
-    //Comprobamos en qué "cuadrante" estamos
-
-    avanzaR2D2_X += avanz *sin(glm::radians(orientaR2D2_Y));
-    avanzaR2D2_Z += avanz*cos(glm::radians(orientaR2D2_Y));
-
+    drawTieFighterHexagon(P,V,M*Ssmall);
+    drawTieFighterWingPanel(P, V, M * Sbig);
 
 }
 
-void moveTieF(float avanz){
-    //Comprobamos en qué "cuadrante" estamos
+void drawTieFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    avanzaTieF_X += avanz *sin(glm::radians(orientaTieF_Y));
-    avanzaTieF_Z += avanz*cos(glm::radians(orientaTieF_Y));
+    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
+
+    // Motor transformation matrix
+    glm::mat4 Smotor = glm::scale(I, glm::vec3(0.5, 0.5, 0.95));
+    glm::mat4 Tmotor = glm::translate(I, glm::vec3(0.0, 0.0, -0.425));
+
+    drawObjectMat(tieFighterEngine, ruby,P,V,M*R90*Tmotor*Smotor);
+
+    // Window transformation matrix
+    glm::mat4 Swindow = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
+    glm::mat4 Twindow = glm::translate(I, glm::vec3(0.0, 0.0, 0.335));
+
+    drawObjectMat(tieFighterWindowStructure, ruby,P,V,M*R90*Twindow*Swindow);
+
+    // Sphere (principal part of the body) transformation matrix
+    glm::mat4 SS = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
+
+    drawObjectTex(sphere, texTieFighterBody ,P,V,M*SS);
 
 }
 
-// ___________________________________________________________    Hologram    ___________________________________________________________ //
+void drawTieFighterArmLowerBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-void drawHologram_Base(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 Supper= glm::scale(I, glm::vec3(0.25, 0.325, 0.25));
-    glm::mat4 Slower= glm::scale(I, glm::vec3(0.375, 0.03, 0.375));
-    glm::mat4 ThSphere= glm::translate(I, glm::vec3(2.0, 2.15, 2.0));
-    glm::mat4 ShSphere= glm::scale(I, glm::vec3(0.225, 0.225, 0.225));
+    glm::mat4 R270 = glm::rotate(I, glm::radians(270.0f), glm::vec3(1.0,0.0,0.0));
+    glm::mat4 S = glm::scale(I, glm::vec3(0.08, 0.075, 0.08));
+    glm::mat4 S2 = glm::scale(I, glm::vec3(0.05, 0.075, 0.12));
+
+    drawObjectTex(truncatedPyramid, texTieFighterBody,P,V,M*R270*S);
+    drawObjectTex(truncatedPyramid, texTieFighterBody,P,V,M*R270*S2);
+
+}
+
+void drawTieFighterArmUpperBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 Ttop = glm::translate(I, glm::vec3(0.0, 0.15, 0.0));
+    glm::mat4 Stop = glm::scale(I, glm::vec3(0.5, 1.2, 0.5));
+
+    drawTieFighterArmLowerBase(P, V, M * Ttop * Stop);
+    drawTieFighterArmLowerBase(P, V, M);
+
+}
+
+void drawTieFighterArmConnection(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // Cylinder transformation matrix
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.51, 0.0));
+    glm::mat4 S = glm::scale(I, glm::vec3(0.085, 0.015, 0.085));
+    drawObjectTex(cylinder, texTieFighterBody,P,V,M*T*S);
+
+    drawTieFighterArmUpperBase(P, V, M);
+    drawTieFighterArmUpperBase(P, V, M);
+
+}
+
+void drawTieFighterArm(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // Wing transformation matrix
+    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(1.0,0.0,0.0));
+    glm::mat4 Twing = glm::translate(I, glm::vec3(0.0, 0.53, 0.0));
+
+    drawTieFighterWing(P, V, M * Twing * R90);
+
+    drawTieFighterArmConnection(P, V, M);
+
+}
+
+void drawTieFighterWeapon(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // Parts of the base transformation matrix
+    glm::mat4 S = glm::scale(I, glm::vec3(0.5, 1.0, 0.5));   // This turns the cube into a rectangle
+    glm::mat4 SR = glm::scale(I, glm::vec3(0.25, 0.5, 0.25));  // This turns the cube into a rectangle but with different dimensions
+    glm::mat4 TR = glm::translate(I, glm::vec3(0.0, 1.5, 0.0));
+    drawObjectTex(cube, texTieFighterBody,P,V,M*S);       // Base of the weapon structure that's connected to the body
+    drawObjectTex(cube, texTieFighterBody,P,V,M*TR*SR); // Second part of the base of the weapong structure that its between the previous rectangle and the lihgting part
+
+    // Lighting cube transformation matrix
+    glm::mat4 SC = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
+    glm::mat4 TC = glm::translate(I, glm::vec3(0.0, 2.25, 0.0));
+    drawObjectMat(cube, ruby,P,V,M*TC*SC);  // "Lighting" red part of the weapon
+
+}
+
+void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    // Arms transformation matrix
+    glm::mat4 RL90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(1.0,0.0,0.0));
+    glm::mat4 TLArm = glm::translate(I, glm::vec3(0.0, 0.0, -0.35));
+    // Reversed arm and weapon transformation matrix
+    glm::mat4 Sinverse = glm::scale(I, glm::vec3(1.0, 1.0, -1.0));
+
+    drawTieFighterArm(P,V,M*TLArm*RL90);
+    drawTieFighterBody(P,V,M);
+    drawTieFighterArm(P,V,M*Sinverse*TLArm*RL90);  // The second wing is the same as the other but reflected in Z (with the SCALE)
+
+    // Weapon transformation matrix
+    glm::mat4 SW = glm::scale(I, glm::vec3(0.08, 0.08, 0.08));
+    glm::mat4 RW90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 TW = glm::translate(I, glm::vec3(0.2, -0.3, 0.2));
+
+    drawTieFighterWeapon(P,V,M*TW*SW*RW90);
+    drawTieFighterWeapon(P,V,M*Sinverse*TW*SW*RW90);  // The second weapon is the same as the other but reflected in Z (with the SCALE)
+
+}
+
+
+// ----------------------------------------------         Hologram         ----------------------------------------------
+
+void drawHologramBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 Supper = glm::scale(I, glm::vec3(0.25, 0.325, 0.25));
+    glm::mat4 Slower = glm::scale(I, glm::vec3(0.375, 0.03, 0.375));
+    glm::mat4 ThSphere = glm::translate(I, glm::vec3(2.0, 2.15, 2.0));
+    glm::mat4 ShSphere = glm::scale(I, glm::vec3(0.225, 0.225, 0.225));
 
     drawHalfSphere(P,V,M*ShSphere*ThSphere);
     drawCylinder(P,V,M*Supper);
     drawCylinder(P,V,M*Slower);
+
 }
 
-void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M){
-    glm::mat4 T= glm::translate(I, glm::vec3(0.0, levitatingY, 0.0));
-    glm::mat4 S= glm::scale(I, glm::vec3(0.225, 0.225, 0.225));
-    glm::mat4 R= glm::rotate(I, glm::radians(rotatingHolo), glm::vec3(0.0, 1.0,0.0));
+void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawObject(bbYoda,glm::vec3(0.85, 0.85, 1.0),P,V,M*R*T*S);
-    drawHologram_Base(P,V,M);
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, holoLevitatingY, 0.0));
+    glm::mat4 S = glm::scale(I, glm::vec3(0.225, 0.225, 0.225));
+    glm::mat4 R = glm::rotate(I, glm::radians(holoRotating), glm::vec3(0.0, 1.0,0.0));
+
+    drawObject(babyYoda,glm::vec3(0.85, 0.85, 1.0),P,V,M*R*T*S);
+    drawHologramBase(P,V,M);
+
 }
 
-void HologramAutoRotation(int value) {
-    if(not subeHolo){
-        levitatingY -= 0.005;
-        if(levitatingY <= 0.775)
-            subeHolo=true;
-    }
-    else{
-        levitatingY += 0.005;
-        if(levitatingY >= 0.975)
-            subeHolo=false;
+
+// ----------------------------------------------         Terrain - Scenario         ----------------------------------------------
+
+void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(8.0, 1.0, 8.0));
+    drawObject(plane,glm::vec3(0.5, 0.5, 0.5),P,V,M*S);
+
+}
+
+
+// ----------------------------------------------      Animation Functions     ----------------------------------------------
+
+void HologramAutoRotation (int value) {
+
+    if (not holoUp) {
+        holoLevitatingY -= 0.005;
+        if(holoLevitatingY <= 0.775)
+            holoUp = true;
+    } else {
+        holoLevitatingY += 0.005;
+        if(holoLevitatingY >= 0.975)
+            holoUp = false;
     }
 
-    rotatingHolo += 0.5;
+    holoRotating += 0.5;
     glutPostRedisplay();
     glutTimerFunc(speed, HologramAutoRotation ,0);
 
 }
 
-void cameraZoom(int key, int status, int x, int y) {
+void cameraZoom (int key, int status, int x, int y) {
 
     switch (key) {
         case 4:
-            if (zoom < 60) zoom += 1;
+            if (zoom < 120) zoom += 1;
             break;
         case 3:
             if (zoom > 10) zoom -= 1;
@@ -747,7 +1152,7 @@ void cameraZoom(int key, int status, int x, int y) {
 
 }
 
-void cameraMovement(int x, int y) {
+void cameraMovement (int x, int y) {
 
     int ax = x - w / 2;
     int ay = y - h / 2;
@@ -757,7 +1162,248 @@ void cameraMovement(int x, int y) {
 
     if(px2degX < 180 && px2degX > -180) alphaX = px2degX;
     if(px2degY < 90 && px2degY > -90) alphaY = -px2degY;
+
     glutPostRedisplay();
 
 }
 
+void animateModel (unsigned char key, int x, int y) {
+
+    switch (key) {
+        // Death Star Animations
+        case 'u':
+            deathStarMovY -= 0.1;
+            break;
+        case 'U':
+            deathStarMovY += 0.1;
+            break;
+        case 'd':
+            deathStarOrientateYTOP += 5;
+            break;
+        case 'D':
+            deathStarOrientateYTOP -= 5;
+            break;
+        /*case 'o':
+            deathStarOrientateXZ += 5;
+            break;
+        case 'O':
+            deathStarOrientateXZ -= 5;
+            break;*/
+
+        // Battleship Animations
+
+        // X-Fighter Animations
+        case 'x':
+            if (xFighterWingAperture > 0)
+                xFighterWingAperture -= 1;
+            break;
+        case 'X':
+            if (xFighterWingAperture < 30)
+                xFighterWingAperture += 1;
+            break;
+
+        // R2D2 Animations
+        case 'o':
+            r2d2OrientateY += 5;
+            break;
+        case 'O':
+            r2d2OrientateY -= 5;
+            break;
+        case 'h':
+            if (r2d2TurnHead < 90) r2d2TurnHead += 3;
+            break;
+        case 'H':
+            if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
+            break;
+        case 'c':
+            if (r2d2BowBody < 22 && r2d2BowBody >= 0){
+                r2d2BowBody += 2;
+                r2d2PlaceBody += 0.025;
+            }
+            break;
+        case 'C':
+            if (r2d2BowBody <= 22 && r2d2BowBody > 0){
+                r2d2BowBody -= 2;
+                r2d2PlaceBody -= 0.025;
+            }
+            break;
+
+        // Tie Fighter Animations
+        case 't':
+            tieFighterOrientateY += 5;
+            break;
+        case 'T':
+            tieFighterOrientateY -= 5;
+            break;
+        case 'y':
+            tieFighterOrientateVertical += 5;
+            break;
+        case 'Y':
+            tieFighterOrientateVertical -= 5;
+            break;
+        case 'a':
+            if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
+            break;
+        case 'A':
+            if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
+            break;
+
+        default:
+            break;
+    }
+    glutPostRedisplay();
+
+}
+
+void modelMovementAndSelection (int key, int x, int y){
+
+    switch (key) {
+        case GLUT_KEY_UP:
+            if (selectedModel[0]) moveDeathStar(0.1);
+            if (selectedModel[1]) moveBattleship(0.1);
+            if (selectedModel[2]) moveXFighter(0.4);
+            if (selectedModel[3]) moveR2D2(0.1);
+            if (selectedModel[4]) moveTieFighter(0.4);
+            // tieFighterFlight += 0.05;
+            break;
+        case GLUT_KEY_DOWN:
+            if (selectedModel[0]) moveDeathStar(-0.1);
+            if (selectedModel[1]) moveBattleship(-0.1);
+            if (selectedModel[2]) moveXFighter(-0.2);
+            if (selectedModel[3]) moveR2D2(-0.1);
+            if (selectedModel[4]) moveTieFighter(-0.2);
+            // tieFighterFlight -= 0.05;
+            break;
+        case GLUT_KEY_RIGHT:
+            if (selectedModel[0]) deathStarOrientateY -= 5;
+            if (selectedModel[1]) battleshipOrientateY -= 5;
+            if (selectedModel[2]) xFighterOrientateY -= 5;
+            if (selectedModel[3]) r2d2OrientateY -= 5;
+            if (selectedModel[4]) tieFighterOrientateY -= 5;
+            // moveTieFighter(0.05);
+            break;
+        case GLUT_KEY_LEFT:
+            if (selectedModel[0]) deathStarOrientateY += 5;
+            if (selectedModel[1]) battleshipOrientateY += 5;
+            if (selectedModel[2]) xFighterOrientateY += 5;
+            if (selectedModel[3]) r2d2OrientateY += 5;
+            if (selectedModel[4]) tieFighterOrientateY += 5;
+            // moveTieFighter(-0.05);
+            break;
+        case GLUT_KEY_F1:
+            // Death Star Selection
+            if (!selectedModel[0] && !centerAtOrigin) {
+                for (int i = 0; i < N_MODELS; ++i) {
+                    if (selectedModel[i]) {
+                        selectedModel[i] = false;
+                        selectedModel[0] = true;
+                    }
+                }
+            } else if (centerAtOrigin) {
+                selectedModel[0] = true;
+                centerAtOrigin = false;
+            }
+            break;
+        case GLUT_KEY_F2:
+            // Battleship Selection
+            if (!selectedModel[1] && !centerAtOrigin) {
+                for (int i = 0; i < N_MODELS; ++i) {
+                    if (selectedModel[i]) {
+                        selectedModel[i] = false;
+                        selectedModel[1] = true;
+                    }
+                }
+            } else if (centerAtOrigin) {
+                selectedModel[1] = true;
+                centerAtOrigin = false;
+            }
+            break;
+        case GLUT_KEY_F3:
+            // X-Fighter Selection
+            if (!selectedModel[2] && !centerAtOrigin) {
+                for (int i = 0; i < N_MODELS; ++i) {
+                    if (selectedModel[i]) {
+                        selectedModel[i] = false;
+                        selectedModel[2] = true;
+                    }
+                }
+            } else if (centerAtOrigin) {
+                selectedModel[2] = true;
+                centerAtOrigin = false;
+            }
+            break;
+        case GLUT_KEY_F4:
+            // R2D2 Selection
+            if (!selectedModel[3] && !centerAtOrigin) {
+                for (int i = 0; i < N_MODELS; ++i) {
+                    if (selectedModel[i]) {
+                        selectedModel[i] = false;
+                        selectedModel[3] = true;
+                    }
+                }
+            } else if (centerAtOrigin) {
+                selectedModel[3] = true;
+                centerAtOrigin = false;
+            }
+            break;
+        case GLUT_KEY_F5:
+            // Tie Fighter Selection
+            if (!selectedModel[4] && !centerAtOrigin) {
+                for (int i = 0; i < N_MODELS; ++i) {
+                    if (selectedModel[i]) {
+                        selectedModel[i] = false;
+                        selectedModel[4] = true;
+                    }
+                }
+            } else if (centerAtOrigin) {
+                selectedModel[4] = true;
+                centerAtOrigin = false;
+            }
+            break;
+        case GLUT_KEY_F6:
+            // Disable Selection and move camera center to the scene origin
+            for (int i = 0; i < N_MODELS; ++i)
+                selectedModel[i] = false;
+            centerAtOrigin = true;
+            break;
+        default:
+            break;
+    }
+    glutPostRedisplay();
+
+}
+
+void moveDeathStar (float movement) {
+
+    deathStarMovX += movement * sin(glm::radians(deathStarOrientateY));
+    deathStarMovZ += movement * cos(glm::radians(deathStarOrientateY));
+
+}
+
+void moveBattleship (float movement) {
+
+    battleshipMovX += movement * sin(glm::radians(battleshipOrientateY));
+    battleshipMovZ += movement * cos(glm::radians(battleshipOrientateY));
+
+}
+
+void moveXFighter (float movement) {
+
+    xFighterMovX += movement * sin(glm::radians(xFighterOrientateY));
+    xFighterMovZ += movement * cos(glm::radians(xFighterOrientateY));
+
+}
+
+void moveR2D2 (float movement) {
+
+    r2d2MovX += movement * sin(glm::radians(r2d2OrientateY));
+    r2d2MovZ += movement * cos(glm::radians(r2d2OrientateY));
+
+}
+
+void moveTieFighter (float movement) {
+
+    tieFighterMovX += movement * sin(glm::radians(tieFighterOrientateY));
+    tieFighterMovZ += movement * cos(glm::radians(tieFighterOrientateY));
+
+}
