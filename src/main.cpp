@@ -34,8 +34,9 @@ void moveBattleship (float movement);
 void moveXFighter (float movement);
 void moveR2D2(float movement);
 void moveTieFighter(float movement);
-void HologramAutoRotation(int value);
+void hologramAutoRotation(int value);
 void modelMovementAndSelection(int key, int x, int y);
+void modelMovementExtra(int key, int x, int y);
 void cameraRepositioning(float x, float y, float z, float alpha_x, float alpha_y);
 void cameraCenter();
 
@@ -196,7 +197,7 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     // selectR2D2 -> [3]
     // selectTieFighter -> [4]
     bool selectedModel[N_MODELS];
-
+    bool keyStates[256];
 
  // Death Star animation variables
     float deathStarMovX = 0.0;
@@ -230,12 +231,11 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
  // Tie Fighter animation variables
     float tieFighterMovX = 0.0;
-    float tieFighterMovY = 0.0;
+    float tieFighterMovY = 1.2;
     float tieFighterMovZ = 0.0;
     float tieFighterOrientateY = 0.0;
     float tieFighterWingAperture = 0.0;
     float tieFighterOrientateVertical = 0.0;
-    float tieFighterFlight = 1.18;
 
  // Baby Yoda Holo animation variables
     GLint speed = 20;  // 20 ms
@@ -244,10 +244,28 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     float holoRotating = 1.0;
 
  // Camera animation variables
-    float bufferAlphaX = 0.0;
-    float bufferAlphaY = 0.0;
+    float bufferAlphaXDeathStar = 0.0;
+    float bufferAlphaYDeathStar = 0.0;
+    float bufferAlphaXBattleship = 0.0;
+    float bufferAlphaYBattleship = 0.0;
+    float bufferAlphaXXFighter = 0.0;
+    float bufferAlphaYXFighter = 0.0;
+    float bufferAlphaXR2D2 = 0.0;
+    float bufferAlphaYR2D2 = 0.0;
+    float bufferAlphaXTieFighter = 0.0;
+    float bufferAlphaYTieFighter = 0.0;
     float alphaX = 0.0;
     float alphaY = 0.0;
+    float alphaXDeathStar = 0.0;
+    float alphaYDeathStar = 0.0;
+    float alphaXBattleship = 0.0;
+    float alphaYBattleship = 0.0;
+    float alphaXXFighter = 0.0;
+    float alphaYXFighter = 0.0;
+    float alphaXR2D2 = 0.0;
+    float alphaYR2D2 = 0.0;
+    float alphaXTieFighter = 0.0;
+    float alphaYTieFighter = 0.0;
     float center_x = 0.0;
     float center_y = 0.0;
     float center_z = 0.0;
@@ -294,7 +312,8 @@ int main(int argc, char** argv) {
     glutMotionFunc(cameraMovement);
     glutKeyboardFunc(animateModel);
     glutSpecialFunc(modelMovementAndSelection);
-    glutTimerFunc(speed, HologramAutoRotation, 0);
+    glutSpecialUpFunc(modelMovementExtra);
+    glutTimerFunc(speed, hologramAutoRotation, 0);
 
  // Main loop
     glutMainLoop();
@@ -460,12 +479,12 @@ void funDisplay() {
 
  // Draw the scene
     drawPlane(P,V,I);
-    //drawDeathStar(P,V,I);
-    //drawBattleship(P,V,I);
+    drawDeathStar(P,V,I);
+    drawBattleship(P,V,I);
     drawXFighter(P,V,I);
-    //drawR2D2(P,V,I);
-    //drawTieFighter(P,V,I);
-    // drawBabyYodaHologram(P,V,I);
+    drawR2D2(P,V,I);
+    drawTieFighter(P,V,I);
+    drawBabyYodaHologram(P,V,I);
 
  // Swap buffers
     glutSwapBuffers();
@@ -1042,9 +1061,9 @@ void drawTieFighterWeapon(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 T = glm::translate(I, glm::vec3(tieFighterMovX, tieFighterFlight, tieFighterMovZ));
-    glm::mat4 RtiefY = glm::rotate(I, glm::radians(tieFighterOrientateY), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 T = glm::translate(I, glm::vec3(tieFighterMovX, tieFighterMovY, tieFighterMovZ));
+    glm::mat4 R_y = glm::rotate(I, glm::radians(tieFighterOrientateY), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 R = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
 
     // Arms transformation matrix
@@ -1053,17 +1072,17 @@ void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // Reversed arm and weapon transformation matrix
     glm::mat4 Sinverse = glm::scale(I, glm::vec3(1.0, 1.0, -1.0));
 
-    drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*TLArm*RL90);
-    drawTieFighterBody(P,V,M*T*RtiefY*RtiefUpDown*R);
-    drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TLArm*RL90);  // The second wing is the same as the other but reflected in Z (with the SCALE)
+    drawTieFighterArm(P,V,M*T*R_y*RtiefUpDown*R*TLArm*RL90);
+    drawTieFighterBody(P,V,M*T*R_y*RtiefUpDown*R);
+    drawTieFighterArm(P,V,M*T*R_y*RtiefUpDown*R*Sinverse*TLArm*RL90);  // The second wing is the same as the other but reflected in Z (with the SCALE)
 
     // Weapon transformation matrix
     glm::mat4 SW = glm::scale(I, glm::vec3(0.08, 0.08, 0.08));
     glm::mat4 RW90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
     glm::mat4 TW = glm::translate(I, glm::vec3(0.2, -0.3, 0.2));
 
-    drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*TW*SW*RW90);
-    drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TW*SW*RW90);  // The second weapon is the same as the other but reflected in Z (with the SCALE)
+    drawTieFighterWeapon(P,V,M*T*R_y*RtiefUpDown*R*TW*SW*RW90);
+    drawTieFighterWeapon(P,V,M*T*R_y*RtiefUpDown*R*Sinverse*TW*SW*RW90);  // The second weapon is the same as the other but reflected in Z (with the SCALE)
 
 }
 
@@ -1107,7 +1126,7 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 // ----------------------------------------------      Animation Functions     ----------------------------------------------
 
-void HologramAutoRotation (int value) {
+void hologramAutoRotation(int value) {
 
     if (not holoUp) {
         holoLevitatingY -= 0.005;
@@ -1121,11 +1140,11 @@ void HologramAutoRotation (int value) {
 
     holoRotating += 0.5;
     glutPostRedisplay();
-    glutTimerFunc(speed, HologramAutoRotation ,0);
+    glutTimerFunc(speed, hologramAutoRotation ,0);
 
 }
 
-void cameraZoom (int key, int status, int x, int y) {
+void cameraZoom(int key, int status, int x, int y) {
 
     switch (key) {
         case 4:
@@ -1141,7 +1160,7 @@ void cameraZoom (int key, int status, int x, int y) {
 
 }
 
-void cameraMovement (int x, int y) {
+void cameraMovement(int x, int y) {
 
     int ax = x - w / 2;
     int ay = y - h / 2;
@@ -1149,20 +1168,41 @@ void cameraMovement (int x, int y) {
     int px2degX = ax * 180 / w;
     int px2degY = ay * 90 / (h/2);
 
-    if(px2degX < 180 && px2degX > -180) alphaX = px2degX;
-    if(px2degY < 90 && px2degY > -90) alphaY = -px2degY;
-
-    if (selectedModel[0]) cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
-    else if (selectedModel[1]) cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
-    else if (selectedModel[2]) cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
-    else if (selectedModel[3]) cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
-    else if (selectedModel[4]) cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+    if (selectedModel[0]) {
+        if(px2degX < 180 && px2degX > -180) alphaXDeathStar = px2degX;
+        if(px2degY < 90 && px2degY > -90) alphaYDeathStar = -px2degY;
+        cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
+    }
+    else if (selectedModel[1]) {
+        if(px2degX < 180 && px2degX > -180) alphaXBattleship = px2degX;
+        if(px2degY < 90 && px2degY > -90) alphaYBattleship = -px2degY;
+        cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
+    }
+    else if (selectedModel[2]) {
+        if(px2degX < 180 && px2degX > -180) alphaXXFighter = px2degX;
+        if(px2degY < 90 && px2degY > -90) alphaYXFighter = -px2degY;
+        cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
+    }
+    else if (selectedModel[3]) {
+        if(px2degX < 180 && px2degX > -180) alphaXR2D2 = px2degX;
+        if(px2degY < 90 && px2degY > -90) alphaYR2D2 = -px2degY;
+        cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
+    }
+    else if (selectedModel[4]) {
+        if(px2degX < 180 && px2degX > -180) alphaXTieFighter = px2degX;
+        if(px2degY < 90 && px2degY > -90) alphaYTieFighter = -px2degY;
+        cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
+    }
+    else {
+        if(px2degX < 180 && px2degX > -180) alphaX = px2degX;
+        if(px2degY < 90 && px2degY > -90) alphaY = -px2degY;
+    }
 
     glutPostRedisplay();
 
 }
 
-void animateModel (unsigned char key, int x, int y) {
+void animateModel(unsigned char key, int x, int y) {
 
     switch (key) {
         // Death Star Animations
@@ -1198,12 +1238,6 @@ void animateModel (unsigned char key, int x, int y) {
             break;
 
         // R2D2 Animations
-        case 'o':
-            r2d2OrientateY += 5;
-            break;
-        case 'O':
-            r2d2OrientateY -= 5;
-            break;
         case 'h':
             if (r2d2TurnHead < 90) r2d2TurnHead += 3;
             break;
@@ -1224,12 +1258,6 @@ void animateModel (unsigned char key, int x, int y) {
             break;
 
         // Tie Fighter Animations
-        case 't':
-            tieFighterOrientateY += 5;
-            break;
-        case 'T':
-            tieFighterOrientateY -= 5;
-            break;
         case 'y':
             tieFighterOrientateVertical += 5;
             break;
@@ -1250,106 +1278,169 @@ void animateModel (unsigned char key, int x, int y) {
 
 }
 
-void modelMovementAndSelection (int key, int x, int y) {
+void modelMovementAndSelection(int key, int x, int y) {
 
  // Reset alphaX and alphaY with stored values
-    alphaX = bufferAlphaX;
-    alphaY = bufferAlphaY;
+    if (selectedModel[0]) {
+        alphaXDeathStar = bufferAlphaXDeathStar;
+        alphaYDeathStar = bufferAlphaYDeathStar;
+    }
+    if (selectedModel[1]) {
+        alphaXBattleship = bufferAlphaXBattleship;
+        alphaYBattleship = bufferAlphaYBattleship;
+    }
+    if (selectedModel[2]) {
+        alphaXXFighter = bufferAlphaXXFighter;
+        alphaYXFighter = bufferAlphaYXFighter;
+    }
+    if (selectedModel[3]) {
+        alphaXR2D2 = bufferAlphaXR2D2;
+        alphaYR2D2 = bufferAlphaYR2D2;
+    }
+    if (selectedModel[4]) {
+        alphaXTieFighter = bufferAlphaXTieFighter;
+        alphaYTieFighter = bufferAlphaYTieFighter;
+    }
+    keyStates[key] = true;
 
     switch (key) {
         case GLUT_KEY_UP:
             if (selectedModel[0]) {
                 moveDeathStar(0.1);
-                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+                cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
             }
             if (selectedModel[1]) {
                 moveBattleship(0.1);
-                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+                cameraRepositioning(battleshipMovX, battleshipMovY, battleshipMovZ, alphaXBattleship, alphaYBattleship);
             }
             if (selectedModel[2]) {
                 moveXFighter(0.4);
-                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
             }
             if (selectedModel[3]) {
                 moveR2D2(0.1);
-                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+                cameraRepositioning(r2d2MovX, r2d2MovY, r2d2MovZ, alphaXR2D2, alphaYR2D2);
             }
             if (selectedModel[4]) {
                 moveTieFighter(0.4);
-                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
             }
-            // tieFighterFlight += 0.05;
             break;
         case GLUT_KEY_DOWN:
             if (selectedModel[0]) {
                 moveDeathStar(-0.1);
-                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
             }
             if (selectedModel[1]) {
                 moveBattleship(-0.1);
-                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
             }
             if (selectedModel[2]) {
                 moveXFighter(-0.2);
-                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
             }
             if (selectedModel[3]) {
                 moveR2D2(-0.1);
-                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
             }
             if (selectedModel[4]) {
                 moveTieFighter(-0.2);
-                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
             }
-            // tieFighterFlight -= 0.05;
             break;
         case GLUT_KEY_RIGHT:
-            alphaX -= 5;
             if (selectedModel[0]) {
+                if (!centerAtOrigin) alphaXDeathStar -= 5;
                 deathStarOrientateY -= 5;
-                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveDeathStar(0.1);
+                    cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
+                }
             }
             if (selectedModel[1]) {
+                if (!centerAtOrigin) alphaXBattleship -= 5;
                 battleshipOrientateY -= 5;
-                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveBattleship(0.1);
+                    cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
+                }
             }
             if (selectedModel[2]) {
+                if (!centerAtOrigin) alphaXXFighter -= 5;
                 xFighterOrientateY -= 5;
-                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveXFighter(0.4);
+                    cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
+                }
             }
             if (selectedModel[3]) {
+                if (!centerAtOrigin) alphaXR2D2 -= 5;
                 r2d2OrientateY -= 5;
-                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveR2D2(0.1);
+                    cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
+                }
             }
             if (selectedModel[4]) {
+                if (!centerAtOrigin) alphaXTieFighter -= 5;
                 tieFighterOrientateY -= 5;
-                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveTieFighter(0.4);
+                    cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
+                }
             }
-            // moveTieFighter(0.05);
             break;
         case GLUT_KEY_LEFT:
-            alphaX += 5;
             if (selectedModel[0]) {
+                if (!centerAtOrigin) alphaXDeathStar += 5;
                 deathStarOrientateY += 5;
-                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveDeathStar(0.1);
+                    cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
+                }
             }
             if (selectedModel[1]) {
+                if (!centerAtOrigin) alphaXBattleship += 5;
                 battleshipOrientateY += 5;
-                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveBattleship(0.1);
+                    cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
+                }
             }
             if (selectedModel[2]) {
+                if (!centerAtOrigin) alphaXXFighter += 5;
                 xFighterOrientateY += 5;
-                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveXFighter(0.4);
+                    cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
+                }
             }
             if (selectedModel[3]) {
+                if (!centerAtOrigin) alphaXR2D2 += 5;
                 r2d2OrientateY += 5;
-                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveR2D2(0.1);
+                    cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
+                }
             }
             if (selectedModel[4]) {
+                if (!centerAtOrigin) alphaXTieFighter += 5;
                 tieFighterOrientateY += 5;
-                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
+                if (keyStates[GLUT_KEY_UP]) {
+                    moveTieFighter(0.4);
+                    cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
+                }
             }
-            // moveTieFighter(-0.05);
             break;
         case GLUT_KEY_F1:
             // Death Star Selection
@@ -1364,7 +1455,7 @@ void modelMovementAndSelection (int key, int x, int y) {
                 selectedModel[0] = true;
                 centerAtOrigin = false;
             }
-            cameraRepositioning(deathStarMovX,deathStarMovZ,deathStarMovZ,alphaX,alphaY);
+            cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
             zoom = 90.0;
             break;
         case GLUT_KEY_F2:
@@ -1380,7 +1471,7 @@ void modelMovementAndSelection (int key, int x, int y) {
                 selectedModel[1] = true;
                 centerAtOrigin = false;
             }
-            cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+            cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
             zoom = 90.0;
             break;
         case GLUT_KEY_F3:
@@ -1396,7 +1487,7 @@ void modelMovementAndSelection (int key, int x, int y) {
                 selectedModel[2] = true;
                 centerAtOrigin = false;
             }
-            cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+            cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
             zoom = 90.0;
             break;
         case GLUT_KEY_F4:
@@ -1412,8 +1503,8 @@ void modelMovementAndSelection (int key, int x, int y) {
                 selectedModel[3] = true;
                 centerAtOrigin = false;
             }
-            cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
-            zoom = 90.0;
+            cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
+            zoom = 60.0;
             break;
         case GLUT_KEY_F5:
             // Tie Fighter Selection
@@ -1428,7 +1519,7 @@ void modelMovementAndSelection (int key, int x, int y) {
                 selectedModel[4] = true;
                 centerAtOrigin = false;
             }
-            cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+            cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
             zoom = 90.0;
             break;
         case GLUT_KEY_F6:
@@ -1437,49 +1528,74 @@ void modelMovementAndSelection (int key, int x, int y) {
                 selectedModel[i] = false;
             centerAtOrigin = true;
             // Camera Positioning
-            cameraRepositioning(0.0,0.0,0.0,0.0,0.0);
-            zoom = 90.0;
+            cameraRepositioning(0.0,0.0,0.0,alphaX,alphaY);
+            zoom = 60.0;
             break;
         default:
             break;
     }
 
- // Always save alphaX and alphaY in the buffer
-    bufferAlphaX = alphaX;
-    bufferAlphaY = alphaY;
+ // Save alphaX and alphaY in the buffer
+    if (selectedModel[0]) {
+         bufferAlphaXDeathStar = alphaXDeathStar;
+         bufferAlphaYDeathStar = alphaYDeathStar;
+    }
+    if (selectedModel[1]) {
+        bufferAlphaXBattleship = alphaXBattleship;
+        bufferAlphaYBattleship = alphaYBattleship;
+    }
+    if (selectedModel[2]) {
+         bufferAlphaXXFighter = alphaXXFighter;
+         bufferAlphaYXFighter = alphaYXFighter;
+    }
+    if (selectedModel[3]) {
+         bufferAlphaXR2D2 = alphaXR2D2;
+         bufferAlphaYR2D2 = alphaYR2D2;
+    }
+    if (selectedModel[4]) {
+         bufferAlphaXTieFighter = alphaXTieFighter;
+         bufferAlphaYTieFighter = alphaYTieFighter;
+    }
     glutPostRedisplay();
 
 }
 
-void moveDeathStar (float movement) {
+void modelMovementExtra(int key, int x, int y) {
+
+    keyStates[key] = false;
+    glutPostRedisplay();
+
+}
+
+void moveDeathStar(float movement) {
 
     deathStarMovX += movement * sin(glm::radians(deathStarOrientateY));
     deathStarMovZ += movement * cos(glm::radians(deathStarOrientateY));
 
 }
 
-void moveBattleship (float movement) {
+void moveBattleship(float movement) {
 
     battleshipMovX += movement * sin(glm::radians(battleshipOrientateY));
     battleshipMovZ += movement * cos(glm::radians(battleshipOrientateY));
 
 }
 
-void moveXFighter (float movement) {
+void moveXFighter(float movement) {
 
     xFighterMovX += movement * sin(glm::radians(xFighterOrientateY));
     xFighterMovZ += movement * cos(glm::radians(xFighterOrientateY));
 
 }
 
-void moveR2D2 (float movement) {
+void moveR2D2(float movement) {
 
     r2d2MovX += movement * sin(glm::radians(r2d2OrientateY));
     r2d2MovZ += movement * cos(glm::radians(r2d2OrientateY));
 
 }
 
-void moveTieFighter (float movement) {
+void moveTieFighter(float movement) {
 
     tieFighterMovX += movement * sin(glm::radians(tieFighterOrientateY));
     tieFighterMovZ += movement * cos(glm::radians(tieFighterOrientateY));
@@ -1492,7 +1608,9 @@ void cameraRepositioning(float x, float y, float z, float alpha_x, float alpha_y
     center_y = y;
     center_z = z;
     eye_x = x+(-5.0f*glm::cos(glm::radians(alpha_y))*glm::sin(glm::radians(alpha_x)));
-    eye_y = y+1.5+(-5.0f*glm::sin(glm::radians(alpha_y)));
+    if (selectedModel[3] || selectedModel[1] || selectedModel[0])
+        eye_y = (y+5.0f)+(-5.0f*glm::sin(glm::radians(alpha_y)));
+    else eye_y = (y+1.5f)+(-5.0f*glm::sin(glm::radians(alpha_y)));
     eye_z = z+(-5.0f*glm::cos(glm::radians(alpha_y))*glm::cos(glm::radians(alpha_x)));
 
 }
