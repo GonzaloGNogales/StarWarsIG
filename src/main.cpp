@@ -369,7 +369,7 @@ void funInit() {
     tieFighterEngine.initModel("resources/models/TieFighterEngine.obj");
     tieFighterWindowStructure.initModel("resources/models/TieFighterWindow.obj");
     tieFighterWindowGlass.initModel("resources/models/TieFighterWindowGlass.obj");
-    //tieFighterWingDetail.initModel("resources/models/TieFighterWingDetail.obj");
+    tieFighterWingDetail.initModel("resources/models/TieFighterWingDetail.obj");
 
     babyYoda.initModel("resources/models/BabyYoda.obj");
 
@@ -934,60 +934,60 @@ void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterDetail(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    // Animation
-    glm::mat4 RlowerAperture = glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 RupperAperture = glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(0.0, 0.0, 1.0));
+    //Animation
+    glm::mat4 RlowerAperture= glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 RupperAperture= glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(0.0, 0.0, 1.0));
 
-    glm::mat4 S = glm::scale(I, glm::vec3(0.25, 0.25, 0.25));
-    // Draw the wing detail (is the lower part)
+    glm::mat4 S= glm::scale(I, glm::vec3(0.25, 0.25, 0.25));
+    //Draw the wing detail (is the lower part)
     drawObjectTex(tieFighterWingDetail, texTieFighterBody, P, V, M * RlowerAperture * S);
 
-    glm::mat4 Sinverse = glm::scale(I, glm::vec3(0.25, -0.25, 0.25));
-    // Draw the wing detail but reversed (is the upper part)
+    glm::mat4 Sinverse= glm::scale(I, glm::vec3(0.25, -0.25, 0.25));
+    //Draw the wing detail but inversed (is the upper part)
     drawObjectTex(tieFighterWingDetail, texTieFighterBody, P, V, M * RupperAperture * Sinverse);
 
 }
 
 void drawTieFighterWingPanelTriangleNormal(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 Scube = glm::scale(I, glm::vec3(1.05, 0.05, 0.05));
-    glm::mat4 Tcube = glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
+    glm::mat4 Scube= glm::scale(I, glm::vec3(1.05, 0.05, 0.05));
+    glm::mat4 Tcube= glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
     drawObjectTex(cube, texTieFighterBody, P, V, M * Tcube * Scube);   //It turns into a rectangle that's going to be the border of the wing structure
 
-    drawObjectTex(triangle, texTieFighterWingPanel, P, V, M);    //This triangle is part of the Tie Fighter's wing panels
+    drawObjectTex(triangle, texTieFighterWingPanel, P, V, M);    //This triangle is part of the Tie Fighter's wing pannels
 
 }
 
 void drawTieFighterWingPanelTriangleLateral(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 Slateral = glm::scale(I, glm::vec3(1.15, 0.05, 0.05));
-    glm::mat4 R65 = glm::rotate(I, glm::radians(65.0f), glm::vec3(0.0,0.0,-1.0));
-    glm::mat4 Tcube = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
-    drawObjectTex(cube, texTieFighterBody, P, V, M * Tcube * R65 * Slateral);    // It turns into a rectangle that's going to be the border of the wing structure
+    glm::mat4 Slateral= glm::scale(I, glm::vec3(1.15, 0.05, 0.05));
+    glm::mat4 R65= glm::rotate(I, glm::radians(65.0f), glm::vec3(0.0,0.0,-1.0));
+    glm::mat4 Tcube= glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
+    drawObjectTex(cube, texTieFighterBody, P, V, M * Tcube * R65 * Slateral);    //It turns into a rectangle that's going to be the border of the wing structure
 
-    drawObjectTex(triangle, texTieFighterWingPanel, P, V, M);    // This triangle is part of the Tie Fighter's wing panels
+    drawObjectTex(triangle, texTieFighterWingPanel, P, V, M);    //This triangle is part of the Tie Fighter's wing pannels
 
 }
 
 void drawTieFighterWingPanel(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 R45 = glm::rotate(I, glm::radians(53.5f), glm::vec3(0.0,0.0,1.0));
-    glm::mat4 R180 = glm::rotate(I, glm::radians(180.0f), glm::vec3(0.0,0.0,1.0));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, -1, 0.0));
-    glm::mat4 T2 = glm::translate(I, glm::vec3(1.0, 2.0, 0.0));
-    glm::mat4 T5 = glm::translate(I, glm::vec3(-1.0, -2.0, 0.0));
-    glm::mat4 SinverseX = glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
+    glm::mat4 R45= glm::rotate(I, glm::radians(53.5f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 R180= glm::rotate(I, glm::radians(180.0f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 T= glm::translate(I, glm::vec3(0.0, -1, 0.0));
+    glm::mat4 T2= glm::translate(I, glm::vec3(1.0, 2.0, 0.0));
+    glm::mat4 T5= glm::translate(I, glm::vec3(-1.0, -2.0, 0.0));
+    glm::mat4 SinverseX= glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
 
-    // Animation
-    glm::mat4 RaperturaAbajo = glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
-    glm::mat4 RaperturaArriba = glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
+    //Animation
+    glm::mat4 RaperturaAbajo= glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 RaperturaArriba= glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
 
-    // Lower part of the hexagon
+    //Lower part of the hexagone
     drawTieFighterWingPanelTriangleNormal(P, V, M * RaperturaAbajo * T);
     drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaArriba * T2 * T);
     drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaArriba * SinverseX * T2 * T);
 
-    // Upper part of the hexagon
+    //Upper part of the hexagone
     drawTieFighterWingPanelTriangleNormal(P, V, M * RaperturaArriba * R180 * T);
     drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaAbajo * SinverseX * T5 * R180 * T);
     drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaAbajo * T5 * R180 * T);
@@ -996,8 +996,8 @@ void drawTieFighterWingPanel(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
-    glm::mat4 Sbig = glm::scale(I, glm::vec3(0.5, 0.575, 0.5));
+    glm::mat4 R90= glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
+    glm::mat4 Sbig= glm::scale(I, glm::vec3(0.5, 0.575, 0.5));
 
     drawTieFighterDetail(P, V, M * R90);
     drawTieFighterWingPanel(P, V, M * Sbig);
@@ -1006,7 +1006,7 @@ void drawTieFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 Tglass = glm::translate(I, glm::vec3(0.0, 0.0, 0.075));
+    glm::mat4 Tglass= glm::translate(I, glm::vec3(0.0, 0.0, 0.075));
     drawObjectTex(tieFighterWindowGlass, texTieFighterWindow, P, V, M * Tglass);
     drawObjectMat(tieFighterWindowStructure, obsidian, P, V, M);
 
@@ -1014,22 +1014,22 @@ void drawTieFighterWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
+    glm::mat4 R90= glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
 
-    // Engine transformation matrix
-    glm::mat4 Sengine = glm::scale(I, glm::vec3(0.5, 0.5, 0.95));
-    glm::mat4 Tengine = glm::translate(I, glm::vec3(0.0, 0.0, -0.425));
+    //Motor transformation matrix
+    glm::mat4 Smotor= glm::scale(I, glm::vec3(0.5, 0.5, 0.95));
+    glm::mat4 Tmotor= glm::translate(I, glm::vec3(0.0, 0.0, -0.425));
 
-    drawObjectMat(tieFighterEngine, obsidian, P, V, M * R90 * Tengine * Sengine);
+    drawObjectMat(tieFighterEngine, obsidian, P, V, M * R90 * Tmotor * Smotor);
 
-    // Window transformation matrix
-    glm::mat4 Swindow = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
-    glm::mat4 Twindow = glm::translate(I, glm::vec3(0.0, 0.0, 0.335));
+    //Window transformation matrix
+    glm::mat4 Swindow= glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
+    glm::mat4 Twindow= glm::translate(I, glm::vec3(0.0, 0.0, 0.335));
 
     drawTieFighterWindow(P, V, M * R90 * Twindow * Swindow);
 
-    // Sphere (principal part of the body) transformation matrix
-    glm::mat4 SS = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
+    //Sphere (principal part of the body) transformation matrix
+    glm::mat4 SS= glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
 
     drawObjectTex(sphere, texTieFighterBody , P, V, M * SS);
 
@@ -1037,9 +1037,9 @@ void drawTieFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterArmLowerBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 R270 = glm::rotate(I, glm::radians(270.0f), glm::vec3(1.0,0.0,0.0));
-    glm::mat4 S = glm::scale(I, glm::vec3(0.08, 0.075, 0.08));
-    glm::mat4 S2 = glm::scale(I, glm::vec3(0.05, 0.075, 0.12));
+    glm::mat4 R270= glm::rotate(I, glm::radians(270.0f), glm::vec3(1.0,0.0,0.0));
+    glm::mat4 S= glm::scale(I, glm::vec3(0.08, 0.075, 0.08));
+    glm::mat4 S2= glm::scale(I, glm::vec3(0.05, 0.075, 0.12));
 
     drawObjectTex(truncatedPyramid, texTieFighterBody, P, V, M * R270 * S);
     drawObjectTex(truncatedPyramid, texTieFighterBody, P, V, M * R270 * S2);
@@ -1048,8 +1048,8 @@ void drawTieFighterArmLowerBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterArmUpperBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 Ttop = glm::translate(I, glm::vec3(0.0, 0.15, 0.0));
-    glm::mat4 Stop = glm::scale(I, glm::vec3(0.5, 1.2, 0.5));
+    glm::mat4 Ttop= glm::translate(I, glm::vec3(0.0, 0.15, 0.0));
+    glm::mat4 Stop= glm::scale(I, glm::vec3(0.5, 1.2, 0.5));
 
     drawTieFighterArmLowerBase(P, V, M * Ttop * Stop);
 
@@ -1059,9 +1059,9 @@ void drawTieFighterArmUpperBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterArmConnection(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    // Cylinder transformation matrix
+    //Cylinder transformation matrix
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.51, 0.0));
-    glm::mat4 S = glm::scale(I, glm::vec3(0.085, 0.015, 0.085));
+    glm::mat4 S= glm::scale(I, glm::vec3(0.085, 0.015, 0.085));
     drawObjectTex(cylinder, texTieFighterBody, P, V, M * T * S);
 
     drawTieFighterArmUpperBase(P, V, M);
@@ -1071,9 +1071,9 @@ void drawTieFighterArmConnection(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterArm(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    // Wing transformation matrix
-    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(1.0,0.0,0.0));
-    glm::mat4 Twing = glm::translate(I, glm::vec3(0.0, 0.53, 0.0));
+    //Wing transformation matrix
+    glm::mat4 R90= glm::rotate(I, glm::radians(90.0f), glm::vec3(1.0,0.0,0.0));
+    glm::mat4 Twing= glm::translate(I, glm::vec3(0.0, 0.53, 0.0));
 
     drawTieFighterWing(P, V, M * Twing * R90);
 
@@ -1083,17 +1083,17 @@ void drawTieFighterArm(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighterWeapon(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    // Parts of the base transformation matrix
-    glm::mat4 S = glm::scale(I, glm::vec3(0.5, 1.0, 0.5));   // This turns the cube into a rectangle
-    glm::mat4 SR = glm::scale(I, glm::vec3(0.25, 0.5, 0.25));  // This turns the cube into a rectangle but with different dimensions
-    glm::mat4 TR = glm::translate(I, glm::vec3(0.0, 1.5, 0.0));
-    drawObjectTex(cube, texTieFighterBody, P, V, M * S);       // Base of the weapon structure that's connected to the body
-    drawObjectTex(cube, texTieFighterBody, P, V, M * TR * SR); // Second part of the base of the weapon structure that its between the previous rectangle and the lihgting part
+    //Parts of the base transformation matrix
+    glm::mat4 S= glm::scale(I, glm::vec3(0.5, 1.0, 0.5));   //This turns the cube into a rectangle
+    glm::mat4 SR= glm::scale(I, glm::vec3(0.25, 0.5, 0.25));  //This turns the cube into a rectangle but with different dimensions
+    glm::mat4 TR= glm::translate(I, glm::vec3(0.0, 1.5, 0.0));
+    drawObjectTex(cube, texTieFighterBody, P, V, M * S);       //Base of the weapon structure that's connected to the body
+    drawObjectTex(cube, texTieFighterBody, P, V, M * TR * SR); //Second part of the base of the weapong structure that its between the previous rectangle and the lihgting part
 
-    // Lighting cube transformation matrix
-    glm::mat4 SC = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
-    glm::mat4 TC = glm::translate(I, glm::vec3(0.0, 2.25, 0.0));
-    drawObjectMat(cube, ruby,P,V,M*TC*SC);  // "Lighting" red part of the weapon
+    //Lighting cube transformation matrix
+    glm::mat4 SC= glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
+    glm::mat4 TC= glm::translate(I, glm::vec3(0.0, 2.25, 0.0));
+    drawObjectMat(cube, ruby,P,V,M*TC*SC);  //"Lighting" red part of the weapon
 
 }
 
@@ -1104,23 +1104,23 @@ void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
 
-    // Arms transformation matrix
-    glm::mat4 RL90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(1.0,0.0,0.0));
-    glm::mat4 TLArm = glm::translate(I, glm::vec3(0.0, 0.0, -0.35));
-    // Reversed arm and weapon transformation matrix
-    glm::mat4 Sinverse = glm::scale(I, glm::vec3(1.0, 1.0, -1.0));
+    //Arms transformation matrix
+    glm::mat4 RL90= glm::rotate(I, glm::radians(-90.0f), glm::vec3(1.0,0.0,0.0));
+    glm::mat4 TLArm= glm::translate(I, glm::vec3(0.0, 0.0, -0.35));
+    //Inverserd arm and weapon transformation matrix
+    glm::mat4 Sinverse= glm::scale(I, glm::vec3(1.0, 1.0, -1.0));
 
     drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*TLArm*RL90);
     drawTieFighterBody(P,V,M*T*RtiefY*RtiefUpDown*R);
-    drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TLArm*RL90); // The second wing is the same as the other but reflected in Z (with the SCALE)
+    drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TLArm*RL90); //The second wing is the same as the other but reflected in Z (with the SCALE)
 
-    // Weapon transformation matrix
-    glm::mat4 SW = glm::scale(I, glm::vec3(0.08, 0.08, 0.08));
-    glm::mat4 RW90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
-    glm::mat4 TW = glm::translate(I, glm::vec3(0.2, -0.3, 0.2));
+    //Weapon transformation matrix
+    glm::mat4 SW= glm::scale(I, glm::vec3(0.08, 0.08, 0.08));
+    glm::mat4 RW90= glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
+    glm::mat4 TW= glm::translate(I, glm::vec3(0.2, -0.3, 0.2));
 
     drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*TW*SW*RW90);
-    drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TW*SW*RW90);  // The second weapon is the same as the other but reflected in Z (with the SCALE)
+    drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TW*SW*RW90);  //The second weapon is the same as the other but reflected in Z (with the SCALE)
 
 }
 
