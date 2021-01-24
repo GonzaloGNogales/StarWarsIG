@@ -236,6 +236,12 @@ vector3.h
 cmath
 -
 
+../../libraries/includes/freeimage/freeImage.h
+wchar.h
+-
+inttypes.h
+-
+
 ../../libraries/includes/glm/common.hpp
 detail/func_common.hpp
 ../../libraries/includes/glm/detail/func_common.hpp
@@ -1110,6 +1116,14 @@ glm/gtc/type_ptr.hpp
 glm/gtc/matrix_transform.hpp
 -
 
+C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Texture.h
+iostream
+-
+ogl/glew.h
+-
+freeimage/freeImage.h
+-
+
 C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/main.cpp
 iostream
 -
@@ -1121,4 +1135,8 @@ Shaders.h
 C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.h
 Model.h
 C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.h
+Texture.h
+C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Texture.h
+sstream
+-
 

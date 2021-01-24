@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Model.cpp.obj"
   "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj"
+  "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Texture.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj"
   "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/main.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

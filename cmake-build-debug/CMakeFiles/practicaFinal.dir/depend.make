@@ -237,6 +237,11 @@ CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj: ../../libraries/includes/ogl/g
 CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj: ../src/Shaders.cpp
 CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj: ../src/Shaders.h
 
+CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj: ../../libraries/includes/freeimage/freeImage.h
+CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj: ../../libraries/includes/ogl/glew.h
+CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj: ../src/Texture.cpp
+CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj: ../src/Texture.h
+
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/Compiler/poppack1.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/Compiler/pstdint.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/Compiler/pushpack1.h
@@ -265,6 +270,7 @@ CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/v
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/vector2.inl
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/vector3.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/assimp/vector3.inl
+CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/freeimage/freeImage.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/glm/common.hpp
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/glm/detail/_fixes.hpp
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/glm/detail/_swizzle.hpp
@@ -372,5 +378,6 @@ CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/ogl/free
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../../libraries/includes/ogl/glew.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../src/Model.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../src/Shaders.h
+CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../src/Texture.h
 CMakeFiles/practicaFinal.dir/src/main.cpp.obj: ../src/main.cpp
 

@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/practicaFinal.dir/src/Model.cpp.obj"
   "CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj"
+  "CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj"
   "CMakeFiles/practicaFinal.dir/src/main.cpp.obj"
   "binary/practicaFinal.exe"
   "binary/practicaFinal.exe.manifest"

@@ -96,6 +96,12 @@
 		<Unit filename="C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.h">
 			<Option target="practicaFinal"/>
 		</Unit>
+		<Unit filename="C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Texture.cpp">
+			<Option target="practicaFinal"/>
+		</Unit>
+		<Unit filename="C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Texture.h">
+			<Option target="practicaFinal"/>
+		</Unit>
 		<Unit filename="C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/main.cpp">
 			<Option target="practicaFinal"/>
 		</Unit>

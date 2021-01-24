@@ -19,7 +19,6 @@ std::string toString(const int &i) {
 
 // Textures and Light Functions
 void setLights(glm::mat4 P, glm::mat4 V);
-void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
@@ -37,6 +36,8 @@ void moveR2D2(float movement);
 void moveTieFighter(float movement);
 void HologramAutoRotation(int value);
 void modelMovementAndSelection(int key, int x, int y);
+void cameraRepositioning(float x, float y, float z, float alpha_x, float alpha_y);
+void cameraCenter();
 
 // Polygon Model Functions Headers
 void drawTriangle(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -185,8 +186,8 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     Textures texFloorInverse;
 
  // Viewport variables
-    int w = 600;
-    int h = 600;
+    int w = 1024;
+    int h = 768;
 
  // Model camera selection
     // selectDeathStar -> [0]
@@ -199,25 +200,28 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
  // Death Star animation variables
     float deathStarMovX = 0.0;
-    float deathStarMovZ = 0.0;
     float deathStarMovY = 3.0;
+    float deathStarMovZ = 0.0;
     float deathStarOrientateY = 0.0;
     float deathStarOrientateYTOP = 0.0;
     // float deathStarOrientateXZ = 0.0; -> hablar con Ana
 
  // Battleship animation variables
     float battleshipMovX = 0.0;
+    float battleshipMovY = 0.0;
     float battleshipMovZ = 0.0;
     float battleshipOrientateY = 0.0;
 
  // X-Fighter animation variables
     float xFighterMovX = 0.0;
+    float xFighterMovY = 2.5;
     float xFighterMovZ = 0.0;
     float xFighterOrientateY = 0.0;
     float xFighterWingAperture = 15.0;
 
  // R2D2 animation variables
     float r2d2MovX = 0.0;
+    float r2d2MovY = 0.0;
     float r2d2MovZ = 0.0;
     float r2d2OrientateY = 0.0;
     float r2d2TurnHead = 0.0;
@@ -226,6 +230,7 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
  // Tie Fighter animation variables
     float tieFighterMovX = 0.0;
+    float tieFighterMovY = 0.0;
     float tieFighterMovZ = 0.0;
     float tieFighterOrientateY = 0.0;
     float tieFighterWingAperture = 0.0;
@@ -239,12 +244,17 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     float holoRotating = 1.0;
 
  // Camera animation variables
+    float bufferAlphaX = 0.0;
+    float bufferAlphaY = 0.0;
+    float alphaX = 0.0;
+    float alphaY = 0.0;
     float center_x = 0.0;
     float center_y = 0.0;
     float center_z = 0.0;
+    float eye_x;
+    float eye_y;
+    float eye_z;
     float zoom = 60.0;
-    float alphaX = 0.0;
-    float alphaY = 0.0;
     bool centerAtOrigin = true;
 
 
@@ -260,7 +270,7 @@ int main(int argc, char** argv) {
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(w,h);
-    glutInitWindowPosition(650,200);
+    glutInitWindowPosition(425,150);
     glutCreateWindow("Trabajo Final");
 
  // GLEW init
@@ -376,7 +386,7 @@ void funInit() {
     texTieFighterOuterWindow.shininess = 10.0;
 
  // Global Ambient Light
-    lightG.ambient = glm::vec3(0.3, 0.3, 0.3);
+    lightG.ambient = glm::vec3(0.4, 0.4, 0.4);
 
  // Directional Lights
     lightD[0].direction = glm::vec3(0.0, -1.0, 0.0);
@@ -437,10 +447,8 @@ void funDisplay() {
     glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
 
  // Matrix V
-    float x = 5.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
-    float y = 5.0f*glm::sin(glm::radians(alphaY));
-    float z = 5.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
-    glm::vec3 pos(x,y,z);
+    if (centerAtOrigin) cameraCenter();
+    glm::vec3 pos(eye_x,eye_y,eye_z);
     glm::vec3 lookat(center_x, center_y, center_z);
     glm::vec3 up(0.0, 1.0,  0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
@@ -452,25 +460,12 @@ void funDisplay() {
 
  // Draw the scene
     drawPlane(P,V,I);
-    drawDeathStar(P,V,I);
-    drawBattleship(P,V,I);
+    //drawDeathStar(P,V,I);
+    //drawBattleship(P,V,I);
     drawXFighter(P,V,I);
-
- // Draw the scene ANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    /*drawPlane(P,V,I);
-    glm::mat4 T= glm::translate(I, glm::vec3(avanzaTieF_X, vueloTieF_Y, avanzaTieF_Z));
-
-
-    glm::mat4 RtiefY= glm::rotate(I, glm::radians(orientaTieF_Y), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 RtiefUpDown= glm::rotate(I, glm::radians(orientaTieF_UpDown), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 R= glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
-    drawTie_Fighter(P,V,I*T*RtiefY*RtiefUpDown*R);
-
-    glm::mat4 Rr2d2Y= glm::rotate(I, glm::radians(orientaR2D2_Y), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 Tr2d2= glm::translate(I, glm::vec3(avanzaR2D2_X, 0.0, avanzaR2D2_Z));
-    drawR2D2(P,V,I*Tr2d2*Rr2d2Y);
-
-    drawBabyYodaHologram(P,V,I);*/
+    //drawR2D2(P,V,I);
+    //drawTieFighter(P,V,I);
+    // drawBabyYodaHologram(P,V,I);
 
  // Swap buffers
     glutSwapBuffers();
@@ -489,27 +484,13 @@ void setLights(glm::mat4 P, glm::mat4 V) {
 
     for (int i = 0; i < NLP; i++) {
         glm::mat4 M = glm::translate(I,lightP[i].position) * glm::scale(I,glm::vec3(0.025));
-        drawObjectTex(sphere,texLights,P,V,M);
+        // drawObjectTex(sphere,texLights,P,V,M);
     }
 
     for (int i = 0; i < NLF; i++) {
         glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
-        drawObjectTex(sphere,texLights,P,V,M);
+        // drawObjectTex(sphere,texLights,P,V,M);
     }
-
-}
-
-void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-
-    shaders.setMat4("uPVM",P*V*M);
-
-    glEnable(GL_POLYGON_OFFSET_FILL);
-        shaders.setVec3("uColor",color);
-        model.renderModel(GL_FILL);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    shaders.setVec3("uColor",glm::vec3(0.5*color[0], 0.5*color[1], 0.5*color[2]));
-    model.renderModel(GL_LINE);
 
 }
 
@@ -550,20 +531,20 @@ void drawTriangle(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawObject(sphere, glm::vec3(0.75,0.75,0.75),P,V,M);
+    drawObjectMat(sphere, gold,P,V,M);
 
 }
 
 void drawHalfSphere(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawObject(halfSphere, glm::vec3(0.75,0.75,0.75),P,V,M);
+    drawObjectMat(halfSphere, ruby,P,V,M);
 
 }
 
 void drawCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
-    drawObject(cylinder, glm::vec3(0.75,0.75,0.75),P,V,M*T);
+    drawObjectMat(cylinder, ruby,P,V,M*T);
 
 }
 
@@ -581,14 +562,14 @@ void drawTruncatedPyramid(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawDeathStarBottom(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.75, 0.75, 0.75));
-    drawObject(deathStarBottom,glm::vec3(0.8, 0.8, 0.8),P,V,M*S);
+    drawObjectTex(deathStarBottom, texTieFighterOuterWindow,P,V,M*S);
 
 }
 
 void drawDeathStarTop(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.75, 0.75, 0.75));
-    drawObject(deathStarTop,glm::vec3(0.2, 0.2, 0.2),P,V,M*S);
+    drawObjectTex(deathStarTop,texTieFighterOuterWindow,P,V,M*S);
 
 }
 
@@ -612,7 +593,7 @@ void drawBattleshipFoot(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.9, 0.0));
-    drawObject(battleshipFoot,glm::vec3(0.4, 0, 0.4),P,V,M*S*T);
+    drawObjectTex(battleshipFoot,texTieFighterOuterWindow,P,V,M*S*T);
 
 }
 
@@ -620,7 +601,7 @@ void drawBattleshipJoint(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.7, 0.0));
-    drawObject(battleshipJoint,glm::vec3(0.8, 0.2, 0),P,V,M*S*T);
+    drawObjectTex(battleshipJoint,texTieFighterOuterWindow,P,V,M*S*T);
 
 }
 
@@ -630,7 +611,7 @@ void drawBattleshipCalf(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 5.5, 0.0));
     glm::mat4 R180_xz = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 1));
     glm::mat4 R180_x = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 0));
-    drawObject(battleshipCalf,glm::vec3(1, 1, 0),P,V,M*S*T*R180_x*R180_xz);
+    drawObjectTex(battleshipCalf,texTieFighterOuterWindow,P,V,M*S*T*R180_x*R180_xz);
 
 }
 
@@ -673,14 +654,14 @@ void drawBattleshipLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawBattleshipBodyAux(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.485, 0.485, 0.485));
-    drawObject(battleshipBodyAux,glm::vec3(0, 0, 1),P,V,M*S);
+    drawObjectTex(battleshipBodyAux,texTieFighterOuterWindow,P,V,M*S);
 
 }
 
 void drawBattleshipBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
-    drawObject(battleshipBody,glm::vec3(1, 0, 0),P,V,M*S);
+    drawObjectTex(battleshipBody,texTieFighterOuterWindow,P,V,M*S);
 
 }
 
@@ -689,7 +670,7 @@ void drawBattleshipHead(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
     glm::mat4 R90_y = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 1, 0));
     glm::mat4 T_y = glm::translate(I, glm::vec3(0.0, -0.3, 0.0));
-    drawObject(battleshipHead,glm::vec3(1, 1, 1),P,V,M*T_y*S*R90_y);
+    drawObjectTex(battleshipHead,texTieFighterOuterWindow,P,V,M*T_y*S*R90_y);
 
 }
 
@@ -708,7 +689,7 @@ void drawBattleshipUp(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleship(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 T = glm::translate(I, glm::vec3(battleshipMovX, 0.0, battleshipMovZ));
+    glm::mat4 T = glm::translate(I, glm::vec3(battleshipMovX, battleshipMovY, battleshipMovZ));
     glm::mat4 R_y = glm::rotate(I, glm::radians(battleshipOrientateY), glm::vec3(0, 1, 0));
 
     glm::mat4 T_up = glm::translate(I, glm::vec3(0.0, 3.1, 0.0));
@@ -734,14 +715,14 @@ void drawXFighterWing(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 R90_y = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 1, 0));
     glm::mat4 T = glm::translate(I, glm::vec3(1.65, 0.15, -2.0));
-    drawObject(xfighterWing,glm::vec3(1, 0.5, 0),P,V,M*T*R90_y);
+    drawObjectTex(xfighterWing,texTieFighterWingPanel,P,V,M*T*R90_y);
 
 }
 
 void drawXFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
-    drawObject(xfighterBody,glm::vec3(0.8, 0, 0.5),P,V,M*S);
+    drawObjectTex(xfighterBody,texTieFighterBody,P,V,M*S);
 
 }
 
@@ -762,7 +743,7 @@ void drawXFighterEngines(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawXFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 R = glm::rotate(I, glm::radians(xFighterOrientateY), glm::vec3(0, 1, 0));
-    glm::mat4 T = glm::translate(I, glm::vec3(xFighterMovX, 2.5, xFighterMovZ));
+    glm::mat4 T = glm::translate(I, glm::vec3(xFighterMovX, xFighterMovY, xFighterMovZ));
     drawXFighterEngines(P,V,M*T*R);
     drawXFighterBody(P,V,M*T*R);
 
@@ -773,7 +754,7 @@ void drawXFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawR2D2HollowCylinder(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawObject(R2D2hollowCylinder, glm::vec3(0.2,0.2,0.2),P,V,M);
+    drawObjectTex(R2D2hollowCylinder, texTieFighterOuterWindow,P,V,M);
 
 }
 
@@ -839,8 +820,8 @@ void drawR2D2Head(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawR2D2Arm(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.7, 0.1225));
-    drawObject(R2D2Arm, glm::vec3(0.0,0.3,0.9),P,V,M*T);
-    drawObject(R2D2Wheel, glm::vec3(0.0,0.3,0.9),P,V,M);
+    drawObjectTex(R2D2Arm, texTieFighterWingPanel,P,V,M*T);
+    drawObjectTex(R2D2Wheel, texTieFighterWingPanel,P,V,M);
 
 }
 
@@ -850,14 +831,14 @@ void drawR2D2Base(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 RBow = glm::rotate(I, glm::radians((float)(r2d2BowBody-22.0)), glm::vec3(-1.0,0.0,0.0));
     glm::mat4 TPlace = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody));    // Sirve para colocar el "palo" que va unido a la base.
-    drawObject(R2D2Articulation, glm::vec3(0.0,0.3,0.9),P,V,M*TPlace*RBow*T);
-    drawObject(R2D2Wheel, glm::vec3(0.0,0.3,0.9),P,V,M);
+    drawObjectTex(R2D2Articulation, texTieFighterOuterWindow,P,V,M*TPlace*RBow*T);
+    drawObjectTex(R2D2Wheel, texTieFighterOuterWindow,P,V,M);
 
 }
 
 void drawR2D2Body(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    drawObject(R2D2Body, glm::vec3(0.8,0.8,0.8),P,V,M);
+    drawObjectTex(R2D2Body, texTieFighterBody,P,V,M);
 
 }
 
@@ -878,20 +859,23 @@ void drawR2D2Top(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    glm::mat4 Rr2d2Y= glm::rotate(I, glm::radians(r2d2OrientateY), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 Tr2d2= glm::translate(I, glm::vec3(r2d2MovX, r2d2MovY, r2d2MovZ));
+
     glm::mat4 RBow = glm::rotate(I, glm::radians(r2d2BowBody), glm::vec3(-1.0,0.0,0.0));
     glm::mat4 TPlacement = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody));
-    drawR2D2Top(P,V,M*TPlacement*RBow);
+    drawR2D2Top(P,V,M*Tr2d2*Rr2d2Y*TPlacement*RBow);
 
     glm::mat4 TSpecialPlacement = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody/1.5));    // Sirve para terminar de colocar la rueda del centro y que no quede más atrás
     glm::mat4 SBase = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
-    drawR2D2Base(P,V,M*TSpecialPlacement*SBase);
+    drawR2D2Base(P,V,M*Tr2d2*Rr2d2Y*TSpecialPlacement*SBase);
 
     glm::mat4 SArm = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
     glm::mat4 TArm = glm::translate(I, glm::vec3(0.28, 0.0, -0.2));
-    drawR2D2Arm(P,V,M*TArm*SArm);
+    drawR2D2Arm(P,V,M*Tr2d2*Rr2d2Y*TArm*SArm);
 
     glm::mat4 SArmInverse= glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
-    drawR2D2Arm(P,V,M*SArmInverse*TArm*SArm);
+    drawR2D2Arm(P,V,M*Tr2d2*Rr2d2Y*SArmInverse*TArm*SArm);
 
 }
 
@@ -1058,23 +1042,28 @@ void drawTieFighterWeapon(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    glm::mat4 T = glm::translate(I, glm::vec3(tieFighterMovX, tieFighterFlight, tieFighterMovZ));
+    glm::mat4 RtiefY = glm::rotate(I, glm::radians(tieFighterOrientateY), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 R = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
+
     // Arms transformation matrix
     glm::mat4 RL90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(1.0,0.0,0.0));
     glm::mat4 TLArm = glm::translate(I, glm::vec3(0.0, 0.0, -0.35));
     // Reversed arm and weapon transformation matrix
     glm::mat4 Sinverse = glm::scale(I, glm::vec3(1.0, 1.0, -1.0));
 
-    drawTieFighterArm(P,V,M*TLArm*RL90);
-    drawTieFighterBody(P,V,M);
-    drawTieFighterArm(P,V,M*Sinverse*TLArm*RL90);  // The second wing is the same as the other but reflected in Z (with the SCALE)
+    drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*TLArm*RL90);
+    drawTieFighterBody(P,V,M*T*RtiefY*RtiefUpDown*R);
+    drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TLArm*RL90);  // The second wing is the same as the other but reflected in Z (with the SCALE)
 
     // Weapon transformation matrix
     glm::mat4 SW = glm::scale(I, glm::vec3(0.08, 0.08, 0.08));
     glm::mat4 RW90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
     glm::mat4 TW = glm::translate(I, glm::vec3(0.2, -0.3, 0.2));
 
-    drawTieFighterWeapon(P,V,M*TW*SW*RW90);
-    drawTieFighterWeapon(P,V,M*Sinverse*TW*SW*RW90);  // The second weapon is the same as the other but reflected in Z (with the SCALE)
+    drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*TW*SW*RW90);
+    drawTieFighterWeapon(P,V,M*T*RtiefY*RtiefUpDown*R*Sinverse*TW*SW*RW90);  // The second weapon is the same as the other but reflected in Z (with the SCALE)
 
 }
 
@@ -1100,7 +1089,7 @@ void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S = glm::scale(I, glm::vec3(0.225, 0.225, 0.225));
     glm::mat4 R = glm::rotate(I, glm::radians(holoRotating), glm::vec3(0.0, 1.0,0.0));
 
-    drawObject(babyYoda,glm::vec3(0.85, 0.85, 1.0),P,V,M*R*T*S);
+    drawObjectMat(babyYoda,emerald,P,V,M*R*T*S);
     drawHologramBase(P,V,M);
 
 }
@@ -1111,7 +1100,7 @@ void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 S = glm::scale(I, glm::vec3(8.0, 1.0, 8.0));
-    drawObject(plane,glm::vec3(0.5, 0.5, 0.5),P,V,M*S);
+    drawObjectTex(plane,texTieFighterBody,P,V,M*S);
 
 }
 
@@ -1162,6 +1151,12 @@ void cameraMovement (int x, int y) {
 
     if(px2degX < 180 && px2degX > -180) alphaX = px2degX;
     if(px2degY < 90 && px2degY > -90) alphaY = -px2degY;
+
+    if (selectedModel[0]) cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+    else if (selectedModel[1]) cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+    else if (selectedModel[2]) cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+    else if (selectedModel[3]) cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+    else if (selectedModel[4]) cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
 
     glutPostRedisplay();
 
@@ -1255,39 +1250,105 @@ void animateModel (unsigned char key, int x, int y) {
 
 }
 
-void modelMovementAndSelection (int key, int x, int y){
+void modelMovementAndSelection (int key, int x, int y) {
+
+ // Reset alphaX and alphaY with stored values
+    alphaX = bufferAlphaX;
+    alphaY = bufferAlphaY;
 
     switch (key) {
         case GLUT_KEY_UP:
-            if (selectedModel[0]) moveDeathStar(0.1);
-            if (selectedModel[1]) moveBattleship(0.1);
-            if (selectedModel[2]) moveXFighter(0.4);
-            if (selectedModel[3]) moveR2D2(0.1);
-            if (selectedModel[4]) moveTieFighter(0.4);
+            if (selectedModel[0]) {
+                moveDeathStar(0.1);
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[1]) {
+                moveBattleship(0.1);
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[2]) {
+                moveXFighter(0.4);
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[3]) {
+                moveR2D2(0.1);
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+            }
+            if (selectedModel[4]) {
+                moveTieFighter(0.4);
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+            }
             // tieFighterFlight += 0.05;
             break;
         case GLUT_KEY_DOWN:
-            if (selectedModel[0]) moveDeathStar(-0.1);
-            if (selectedModel[1]) moveBattleship(-0.1);
-            if (selectedModel[2]) moveXFighter(-0.2);
-            if (selectedModel[3]) moveR2D2(-0.1);
-            if (selectedModel[4]) moveTieFighter(-0.2);
+            if (selectedModel[0]) {
+                moveDeathStar(-0.1);
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[1]) {
+                moveBattleship(-0.1);
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[2]) {
+                moveXFighter(-0.2);
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[3]) {
+                moveR2D2(-0.1);
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+            }
+            if (selectedModel[4]) {
+                moveTieFighter(-0.2);
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+            }
             // tieFighterFlight -= 0.05;
             break;
         case GLUT_KEY_RIGHT:
-            if (selectedModel[0]) deathStarOrientateY -= 5;
-            if (selectedModel[1]) battleshipOrientateY -= 5;
-            if (selectedModel[2]) xFighterOrientateY -= 5;
-            if (selectedModel[3]) r2d2OrientateY -= 5;
-            if (selectedModel[4]) tieFighterOrientateY -= 5;
+            alphaX -= 5;
+            if (selectedModel[0]) {
+                deathStarOrientateY -= 5;
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[1]) {
+                battleshipOrientateY -= 5;
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[2]) {
+                xFighterOrientateY -= 5;
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[3]) {
+                r2d2OrientateY -= 5;
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+            }
+            if (selectedModel[4]) {
+                tieFighterOrientateY -= 5;
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+            }
             // moveTieFighter(0.05);
             break;
         case GLUT_KEY_LEFT:
-            if (selectedModel[0]) deathStarOrientateY += 5;
-            if (selectedModel[1]) battleshipOrientateY += 5;
-            if (selectedModel[2]) xFighterOrientateY += 5;
-            if (selectedModel[3]) r2d2OrientateY += 5;
-            if (selectedModel[4]) tieFighterOrientateY += 5;
+            alphaX += 5;
+            if (selectedModel[0]) {
+                deathStarOrientateY += 5;
+                cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[1]) {
+                battleshipOrientateY += 5;
+                cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[2]) {
+                xFighterOrientateY += 5;
+                cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+            }
+            if (selectedModel[3]) {
+                r2d2OrientateY += 5;
+                cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+            }
+            if (selectedModel[4]) {
+                tieFighterOrientateY += 5;
+                cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+            }
             // moveTieFighter(-0.05);
             break;
         case GLUT_KEY_F1:
@@ -1303,6 +1364,8 @@ void modelMovementAndSelection (int key, int x, int y){
                 selectedModel[0] = true;
                 centerAtOrigin = false;
             }
+            cameraRepositioning(deathStarMovX,deathStarMovZ,deathStarMovZ,alphaX,alphaY);
+            zoom = 90.0;
             break;
         case GLUT_KEY_F2:
             // Battleship Selection
@@ -1317,6 +1380,8 @@ void modelMovementAndSelection (int key, int x, int y){
                 selectedModel[1] = true;
                 centerAtOrigin = false;
             }
+            cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaX,alphaY);
+            zoom = 90.0;
             break;
         case GLUT_KEY_F3:
             // X-Fighter Selection
@@ -1331,6 +1396,8 @@ void modelMovementAndSelection (int key, int x, int y){
                 selectedModel[2] = true;
                 centerAtOrigin = false;
             }
+            cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaX,alphaY);
+            zoom = 90.0;
             break;
         case GLUT_KEY_F4:
             // R2D2 Selection
@@ -1345,6 +1412,8 @@ void modelMovementAndSelection (int key, int x, int y){
                 selectedModel[3] = true;
                 centerAtOrigin = false;
             }
+            cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaX,alphaY);
+            zoom = 90.0;
             break;
         case GLUT_KEY_F5:
             // Tie Fighter Selection
@@ -1359,16 +1428,25 @@ void modelMovementAndSelection (int key, int x, int y){
                 selectedModel[4] = true;
                 centerAtOrigin = false;
             }
+            cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaX,alphaY);
+            zoom = 90.0;
             break;
         case GLUT_KEY_F6:
             // Disable Selection and move camera center to the scene origin
             for (int i = 0; i < N_MODELS; ++i)
                 selectedModel[i] = false;
             centerAtOrigin = true;
+            // Camera Positioning
+            cameraRepositioning(0.0,0.0,0.0,0.0,0.0);
+            zoom = 90.0;
             break;
         default:
             break;
     }
+
+ // Always save alphaX and alphaY in the buffer
+    bufferAlphaX = alphaX;
+    bufferAlphaY = alphaY;
     glutPostRedisplay();
 
 }
@@ -1405,5 +1483,24 @@ void moveTieFighter (float movement) {
 
     tieFighterMovX += movement * sin(glm::radians(tieFighterOrientateY));
     tieFighterMovZ += movement * cos(glm::radians(tieFighterOrientateY));
+
+}
+
+void cameraRepositioning(float x, float y, float z, float alpha_x, float alpha_y) {
+
+    center_x = x;
+    center_y = y;
+    center_z = z;
+    eye_x = x+(-5.0f*glm::cos(glm::radians(alpha_y))*glm::sin(glm::radians(alpha_x)));
+    eye_y = y+1.5+(-5.0f*glm::sin(glm::radians(alpha_y)));
+    eye_z = z+(-5.0f*glm::cos(glm::radians(alpha_y))*glm::cos(glm::radians(alpha_x)));
+
+}
+
+void cameraCenter() {
+
+    eye_x = -5.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
+    eye_y = -5.0f*glm::sin(glm::radians(alphaY));
+    eye_z = -5.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
 
 }
