@@ -93,7 +93,7 @@ void drawHologramBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Terrain-Scenario Model Functions Headers
-void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawScenario(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 
  // Shaders variable
@@ -101,7 +101,8 @@ void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
  // Model variables
      // Terrain Scenario
-        Model plane;
+        Model docker;
+        Model dockerWindow;
 
      // General + common
         Model sphere;
@@ -398,7 +399,8 @@ void funInit() {
 
     babyYoda.initModel("resources/models/BabyYoda.obj");
 
-    plane.initModel("resources/models/Plane.obj");
+    docker.initModel("resources/models/Docker.obj");
+    dockerWindow.initModel("resources/models/DockerWindow.obj");
 
  // Textures (images)
     imgNoEmissive.initTexture("resources/textures/img1.png");
@@ -621,7 +623,7 @@ void funDisplay() {
  // Matrix P
     float fovy   = zoom;
     float nplane = 0.1;
-    float fplane = 25.0;
+    float fplane = 150.0;
     float aspect = (float)w/(float)h;
     glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
 
@@ -638,13 +640,14 @@ void funDisplay() {
     setLights(P,V);
 
  // Draw the scene
-    drawPlane(P,V,I);
+    // glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, 0.0)); -> Add translations to models to place them on the scene
     drawDeathStar(P,V,I);
     drawBattleship(P,V,I);
     drawXFighter(P,V,I);
     drawR2D2(P,V,I);
     drawTieFighter(P,V,I);
     drawBabyYodaHologram(P,V,I);
+    drawScenario(P,V,I);  // The Docker has a Window to see spaceships so it is drawn in the scene in last position
 
  // Swap buffers
     glutSwapBuffers();
@@ -1241,10 +1244,12 @@ void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 // ----------------------------------------------         Terrain - Scenario         ----------------------------------------------
 
-void drawPlane(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+void drawScenario(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 S = glm::scale(I, glm::vec3(8.0, 1.0, 8.0));
-    drawObjectTex(plane,texTieFighterBody,P,V,M*S);
+    glm::mat4 S = glm::scale(I, glm::vec3(0.8, 0.8, 0.8));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    drawObjectTex(docker,texDeathStarUp,P,V,M*T*S);
+    drawObjectTex(dockerWindow,texTieFighterWindow,P,V,M*T*S);
 
 }
 
@@ -1331,71 +1336,77 @@ void animateModel(unsigned char key, int x, int y) {
 
     switch (key) {
         // Death Star Animations
-        case 'u':
-            deathStarMovY -= 0.1;
+        if (selectedModel[0]) {
+            case 'u':
+                deathStarMovY -= 0.1;
             break;
-        case 'U':
-            deathStarMovY += 0.1;
+            case 'U':
+                deathStarMovY += 0.1;
             break;
-        case 'd':
-            deathStarOrientateYTOP += 5;
+            case 'd':
+                deathStarOrientateYTOP += 5;
             break;
-        case 'D':
-            deathStarOrientateYTOP -= 5;
+            case 'D':
+                deathStarOrientateYTOP -= 5;
             break;
-        /*case 'o':
-            deathStarOrientateXZ += 5;
-            break;
-        case 'O':
-            deathStarOrientateXZ -= 5;
-            break;*/
+            /*case 'o':
+                deathStarOrientateXZ += 5;
+                break;
+            case 'O':
+                deathStarOrientateXZ -= 5;
+                break;*/
+        }
 
         // Battleship Animations
-
+        if (selectedModel[1]) {}
         // X-Fighter Animations
-        case 'x':
-            if (xFighterWingAperture > 0)
-                xFighterWingAperture -= 1;
+        if (selectedModel[2]) {
+            case 'x':
+                if (xFighterWingAperture > 0)
+                    xFighterWingAperture -= 1;
             break;
-        case 'X':
-            if (xFighterWingAperture < 30)
-                xFighterWingAperture += 1;
+            case 'X':
+                if (xFighterWingAperture < 30)
+                    xFighterWingAperture += 1;
             break;
+        }
 
         // R2D2 Animations
-        case 'h':
-            if (r2d2TurnHead < 90) r2d2TurnHead += 3;
+        if (selectedModel[3]) {
+            case 'h':
+                if (r2d2TurnHead < 90) r2d2TurnHead += 3;
             break;
-        case 'H':
-            if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
+            case 'H':
+                if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
             break;
-        case 'c':
-            if (r2d2BowBody < 22 && r2d2BowBody >= 0){
-                r2d2BowBody += 2;
-                r2d2PlaceBody += 0.025;
-            }
+            case 'c':
+                if (r2d2BowBody < 22 && r2d2BowBody >= 0) {
+                    r2d2BowBody += 2;
+                    r2d2PlaceBody += 0.025;
+                }
             break;
-        case 'C':
-            if (r2d2BowBody <= 22 && r2d2BowBody > 0){
-                r2d2BowBody -= 2;
-                r2d2PlaceBody -= 0.025;
-            }
+            case 'C':
+                if (r2d2BowBody <= 22 && r2d2BowBody > 0) {
+                    r2d2BowBody -= 2;
+                    r2d2PlaceBody -= 0.025;
+                }
             break;
-
+        }
         // Tie Fighter Animations
-        case 'y':
-            tieFighterOrientateVertical += 5;
+        if (selectedModel[4]) {
+            case 'y':
+                tieFighterOrientateVertical += 5;
             break;
-        case 'Y':
-            tieFighterOrientateVertical -= 5;
+            case 'Y':
+                tieFighterOrientateVertical -= 5;
             break;
-        case 'a':
-            if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
+            case 'a':
+                if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
             break;
-        case 'A':
-            if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
+            case 'A':
+                if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
             break;
-
+        }
         default:
             break;
     }
@@ -1431,23 +1442,23 @@ void modelMovementAndSelection(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_UP:
             if (selectedModel[0]) {
-                moveDeathStar(0.1);
+                moveDeathStar(0.25);
                 cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
             }
             if (selectedModel[1]) {
-                moveBattleship(0.1);
+                moveBattleship(0.4);
                 cameraRepositioning(battleshipMovX, battleshipMovY, battleshipMovZ, alphaXBattleship, alphaYBattleship);
             }
             if (selectedModel[2]) {
-                moveXFighter(0.4);
+                moveXFighter(0.8);
                 cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
             }
             if (selectedModel[3]) {
-                moveR2D2(0.1);
+                moveR2D2(0.4);
                 cameraRepositioning(r2d2MovX, r2d2MovY, r2d2MovZ, alphaXR2D2, alphaYR2D2);
             }
             if (selectedModel[4]) {
-                moveTieFighter(0.4);
+                moveTieFighter(0.8);
                 cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
             }
             break;
