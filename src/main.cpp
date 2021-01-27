@@ -146,10 +146,11 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
      // Baby Yoda Hologram
         Model babyYoda;
+        Model holoPedestal;
 
  // Texture variables
     Texture imgNoEmissive;
-    Texture imgPurpleMarble;
+    Texture imgSpecularLightnings;
 
     Texture imgDiffuseDeathStarUp;
     Texture imgDiffuseDeathStarDown;
@@ -171,12 +172,19 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     Texture imgTiefWingSpecular;
     Texture imgTiefWingDiffuse;
     Texture imgTiefWingNormal;
-    Texture imgMetallicSpecularTief;
+    Texture imgMetallicSpecular;
     Texture imgBodyDiffuseTief;
     Texture imgWindow;
 
     Texture imgDiffuseHologram;
     Texture imgSpecularHologram;
+    Texture imgDiffusePedestal;
+    Texture imgEmissivePedestal;
+    Texture imgDiffuseWaterBlue;
+    Texture imgDiffuseWaterOrange;
+    Texture imgDiffuseWaterPurple;
+    Texture imgSpecularWater;
+    Texture imgNormalWater;
 
     Texture imgNormalMap;
     Texture imgEmissiveDocker;
@@ -185,8 +193,8 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
  // Lights and Materials
      // Lights
         #define NLD 1
-        #define NLP 1
-        #define NLF 1
+        #define NLP 3
+        #define NLF 3
 
         Light lightG;
         Light lightD[NLD];
@@ -222,6 +230,8 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
     Textures  texHoloBase;
     Textures  texHoloSphere;
+    Textures  texPedestal;
+    Textures  texOrbs;
 
     Textures  texDocker;
 
@@ -245,7 +255,6 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     float deathStarMovZ = 0.0;
     float deathStarOrientateY = 0.0;
     float deathStarOrientateYTOP = 0.0;
-    // float deathStarOrientateXZ = 0.0; -> hablar con Ana
 
  // Battleship animation variables
     float battleshipMovX = 0.0;
@@ -279,8 +288,9 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
  // Baby Yoda Holo animation variables
     GLint speed = 20;  // 20 ms
-    float holoLevitatingY = 0.875;
-    bool holoUp = false;
+    float holoLevitatingY = 1.375;
+    bool  holoUp = false;
+    bool  animationAct = true;
     float holoRotating = 1.0;
 
  // Camera animation variables
@@ -317,6 +327,9 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
   //Lights
     float intensity = 0.7;
+    float levitatingLights = 1.5;
+    bool  lightsUp = false;
+    Light savedLightP[NLP];
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,12 +424,14 @@ void funInit() {
     tieFighterWingDetail.initModel("resources/models/TieFighterWingDetail.obj");
 
     babyYoda.initModel("resources/models/BabyYoda.obj");
+    holoPedestal.initModel("resources/models/HoloPedestal.obj");
 
     docker.initModel("resources/models/Docker.obj");
     dockerWindow.initModel("resources/models/DockerWindow.obj");
 
  // Textures (images)
-    imgNoEmissive.initTexture("resources/textures/img1.png");
+    imgNoEmissive.initTexture("resources/textures/noEmissiveGeneral.png");
+    imgMetallicSpecular.initTexture("resources/textures/metallicSpecular.png");
 
     // DeathStar
     imgDiffuseDeathStarUp.initTexture("resources/textures/diffuseDeathStarUp.png");
@@ -440,22 +455,28 @@ void funInit() {
     imgDiffuseArmR2D2.initTexture("resources/textures/diffuseArmR2D2.png");
 
     // TieFighter
-    imgTiefWingDiffuse.initTexture("resources/textures/TiefWingDiffuse.png");
-    imgTiefWingSpecular.initTexture("resources/textures/TiefWingSpecular.png");
-    imgMetallicSpecularTief.initTexture("resources/textures/MetallicSpecular.png");
-    imgBodyDiffuseTief.initTexture("resources/textures/TiefBodyDiffuse.png");
-    imgTiefWingNormal.initTexture("resources/textures/TiefWingNormal.png");
-    imgWindow.initTexture("resources/textures/TiefWindow.png");
+    imgTiefWingDiffuse.initTexture("resources/textures/tiefWingDiffuse.png");
+    imgTiefWingSpecular.initTexture("resources/textures/tiefWingSpecular.png");
+    imgBodyDiffuseTief.initTexture("resources/textures/tiefBodyDiffuse.png");
+    imgTiefWingNormal.initTexture("resources/textures/tiefWingNormal.png");
+    imgWindow.initTexture("resources/textures/tiefWindow.png");
 
     // Baby Yoda Hologram
     imgDiffuseHologram.initTexture("resources/textures/diffuseSphereHologramBase.png");
-    imgSpecularHologram.initTexture("resources/textures/specularSphereHologramBase.png");
-    imgPurpleMarble.initTexture("resources/textures/purpleMarble.png");
+    imgSpecularHologram.initTexture("resources/textures/specularHologramBase.png");
+    imgSpecularLightnings.initTexture("resources/textures/specularLightings.png");
+    imgDiffusePedestal.initTexture("resources/textures/diffusePedestal.png");
+    imgEmissivePedestal.initTexture("resources/textures/emissivePedestal.png");
+    imgDiffuseWaterBlue.initTexture("resources/textures/diffuseWaterBlue.png");
+    imgDiffuseWaterOrange.initTexture("resources/textures/diffuseWaterOrange.png");
+    imgDiffuseWaterPurple.initTexture("resources/textures/diffuseWaterPurple.png");
+    imgSpecularWater.initTexture("resources/textures/specularWater.png");
+    imgNormalWater.initTexture("resources/textures/normalWater.png");
 
     // Docker
     imgDiffuseDocker.initTexture("resources/textures/diffuseDocker.png");
     imgEmissiveDocker.initTexture("resources/textures/emissiveDocker.png");
-    imgNormalMap.initTexture("resources/textures/NormalMap.png");
+    imgNormalMap.initTexture("resources/textures/normalMap.png");
 
  // Materials initializations
     ruby.ambient = glm::vec4(0.1745f, 0.01175f, 0.01175f, 1.0f);
@@ -490,26 +511,26 @@ void funInit() {
 
     // Death Star
     texDeathStarUp.diffuse = imgDiffuseDeathStarUp.getTexture();
-    texDeathStarUp.specular = imgMetallicSpecularTief.getTexture();
+    texDeathStarUp.specular = imgMetallicSpecular.getTexture();
     texDeathStarUp.emissive = imgNoEmissive.getTexture();
     texDeathStarUp.normal = 0;
     texDeathStarUp.shininess = 10.0;
 
     texDeathStarDown.diffuse = imgDiffuseDeathStarDown.getTexture();
-    texDeathStarDown.specular = imgMetallicSpecularTief.getTexture();
+    texDeathStarDown.specular = imgMetallicSpecular.getTexture();
     texDeathStarDown.emissive = imgNoEmissive.getTexture();
     texDeathStarDown.normal = 0;
     texDeathStarDown.shininess = 10.0;
 
     // BattleShip
     texBattleshipBody.diffuse = imgDiffuseBattleship.getTexture();
-    texBattleshipBody.specular = imgMetallicSpecularTief.getTexture();
+    texBattleshipBody.specular = imgMetallicSpecular.getTexture();
     texBattleshipBody.emissive = imgNoEmissive.getTexture();
     texBattleshipBody.normal = 0;
     texBattleshipBody.shininess = 10.0;
 
     texBattleshipHead.diffuse = imgDiffuseBattleshipHead.getTexture();
-    texBattleshipHead.specular = imgMetallicSpecularTief.getTexture();
+    texBattleshipHead.specular = imgMetallicSpecular.getTexture();
     texBattleshipHead.emissive = imgEmissiveBattleshipHead.getTexture();
     texBattleshipHead.normal = 0;
     texBattleshipHead.shininess = 10.0;
@@ -529,25 +550,25 @@ void funInit() {
 
     // R2D2
     texBigCamera.diffuse = imgDiffuseBigCamera.getTexture();
-    texBigCamera.specular = imgMetallicSpecularTief.getTexture();
+    texBigCamera.specular = imgMetallicSpecular.getTexture();
     texBigCamera.emissive = imgNoEmissive.getTexture();
     texBigCamera.normal = 0;
     texBigCamera.shininess = 10.0;
 
     texHeadR2D2.diffuse = imgDiffuseHeadR2D2.getTexture();
-    texHeadR2D2.specular = imgMetallicSpecularTief.getTexture();
+    texHeadR2D2.specular = imgMetallicSpecular.getTexture();
     texHeadR2D2.emissive = imgNoEmissive.getTexture();
     texHeadR2D2.normal = 0;
     texHeadR2D2.shininess = 10.0;
 
     texBodyR2D2.diffuse = imgDiffuseBodyR2D2.getTexture();
-    texBodyR2D2.specular = imgMetallicSpecularTief.getTexture();
+    texBodyR2D2.specular = imgMetallicSpecular.getTexture();
     texBodyR2D2.emissive = imgNoEmissive.getTexture();
     texBodyR2D2.normal = 0;
     texBodyR2D2.shininess = 10.0;
 
     texArmR2D2.diffuse = imgDiffuseArmR2D2.getTexture();
-    texArmR2D2.specular = imgMetallicSpecularTief.getTexture();
+    texArmR2D2.specular = imgMetallicSpecular.getTexture();
     texArmR2D2.emissive = imgNoEmissive.getTexture();
     texArmR2D2.normal = 0;
     texArmR2D2.shininess = 10.0;
@@ -560,19 +581,19 @@ void funInit() {
     texTieFighterWingPanel.shininess = 10.0;
 
     texTieFighterBody.diffuse = imgBodyDiffuseTief.getTexture();
-    texTieFighterBody.specular = imgMetallicSpecularTief.getTexture();
+    texTieFighterBody.specular = imgMetallicSpecular.getTexture();
     texTieFighterBody.emissive = imgNoEmissive.getTexture();
     texTieFighterBody.normal = 0;
     texTieFighterBody.shininess = 10.0;
 
     texTieFighterWindow.diffuse = imgWindow.getTexture();
-    texTieFighterWindow.specular = imgMetallicSpecularTief.getTexture();
+    texTieFighterWindow.specular = imgMetallicSpecular.getTexture();
     texTieFighterWindow.emissive = imgNoEmissive.getTexture();
     texTieFighterWindow.normal = 0;
     texTieFighterWindow.shininess = 10.0;
 
     texTieFighterOuterWindow.diffuse = imgBodyDiffuseTief.getTexture();
-    texTieFighterOuterWindow.specular = imgMetallicSpecularTief.getTexture();
+    texTieFighterOuterWindow.specular = imgMetallicSpecular.getTexture();
     texTieFighterOuterWindow.emissive = imgNoEmissive.getTexture();
     texTieFighterOuterWindow.normal = 0;
     texTieFighterOuterWindow.shininess = 10.0;
@@ -580,19 +601,31 @@ void funInit() {
     // Baby Yoda
     texHoloSphere.diffuse = imgDiffuseHologram.getTexture();
     texHoloSphere.specular = imgNoEmissive.getTexture();
-    texHoloSphere.emissive = imgPurpleMarble.getTexture();
+    texHoloSphere.emissive = imgSpecularLightnings.getTexture();
     texHoloSphere.normal = 0;
     texHoloSphere.shininess = 10.0;
 
-    texHoloBase.diffuse = imgMetallicSpecularTief.getTexture();
+    texHoloBase.diffuse = imgMetallicSpecular.getTexture();
     texHoloBase.specular = imgSpecularHologram.getTexture();
     texHoloBase.emissive = imgNoEmissive.getTexture();
     texHoloBase.normal = 0;
     texHoloBase.shininess = 10.0;
 
+    texPedestal.diffuse = imgDiffusePedestal.getTexture();
+    texPedestal.specular = imgMetallicSpecular.getTexture();
+    texPedestal.emissive = imgEmissivePedestal.getTexture();
+    texPedestal.normal = 0;
+    texPedestal.shininess = 10.0;
+
+    // We'll add a value to the diffuse component later
+    texOrbs.specular = imgSpecularWater.getTexture();
+    texOrbs.emissive = imgNoEmissive.getTexture();
+    texOrbs.normal = imgNormalWater.getTexture();
+    texOrbs.shininess = 10.0;
+
     // Docker
     texDocker.diffuse = imgDiffuseDocker.getTexture();
-    texDocker.specular = imgMetallicSpecularTief.getTexture();
+    texDocker.specular = imgMetallicSpecular.getTexture();
     texDocker.emissive = imgEmissiveDocker.getTexture();
     texDocker.normal = 0;
     texDocker.shininess = 10.0;
@@ -607,7 +640,7 @@ void funInit() {
     lightD[0].specular = glm::vec3( 0.5, 0.5, 0.5);
 
  // Positional Lights
-    lightP[0].position = glm::vec3(-1.5,0.2,0.0);
+    lightP[0].position = glm::vec3(1.5,0.5,1.5);
     lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
     lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
     lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
@@ -615,7 +648,24 @@ void funInit() {
     lightP[0].c1 = 0.22;
     lightP[0].c2 = 0.20;
 
+    lightP[1].position = glm::vec3(1.5,0.25,1.5);
+    lightP[1].ambient = glm::vec3(0.2, 0.2, 0.2);
+    lightP[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
+    lightP[1].specular = glm::vec3(0.9, 0.9, 0.9);
+    lightP[1].c0 = 1.00;
+    lightP[1].c1 = 0.22;
+    lightP[1].c2 = 0.20;
+
+    lightP[2].position = glm::vec3(1.5,0.75,1.5);
+    lightP[2].ambient = glm::vec3(0.2, 0.2, 0.2);
+    lightP[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
+    lightP[2].specular = glm::vec3(0.9, 0.9, 0.9);
+    lightP[2].c0 = 1.00;
+    lightP[2].c1 = 0.22;
+    lightP[2].c2 = 0.20;
+
  // Focal Lights
+    // Death Star Ray
     lightF[0].position = glm::vec3(3.0,  3.0,  4.0);
     lightF[0].direction = glm::vec3(-3.0, -3.0, -4.0);
     lightF[0].ambient = glm::vec3(0.2,  0.2,  0.2);
@@ -626,6 +676,30 @@ void funInit() {
     lightF[0].c0 = 1.000;
     lightF[0].c1 = 0.090;
     lightF[0].c2 = 0.032;
+
+    // X Fighter Light
+    lightF[1].position = glm::vec3(0.115,  1.0,  1.95);
+    lightF[1].direction = glm::vec3(2.0, -1.0, 2.0);
+    lightF[1].ambient = glm::vec3(0.2,  0.2,  0.2);
+    lightF[1].diffuse = glm::vec3(0.9,  0.9,  0.9);
+    lightF[1].specular = glm::vec3(0.9,  0.9,  0.9);
+    lightF[1].innerCutOff = 5.0;
+    lightF[1].outerCutOff = lightF[0].innerCutOff + 1.5;
+    lightF[1].c0 = 1.000;
+    lightF[1].c1 = 0.090;
+    lightF[1].c2 = 0.032;
+
+    // Tie Fighter Light
+    lightF[2].position = glm::vec3(-0.115,  1.0,  1.95);
+    lightF[2].direction = glm::vec3(2.0, -1.0, 2.0);
+    lightF[2].ambient = glm::vec3(0.2,  0.2,  0.2);
+    lightF[2].diffuse = glm::vec3(0.9,  0.9,  0.9);
+    lightF[2].specular = glm::vec3(0.9,  0.9,  0.9);
+    lightF[2].innerCutOff = 5.0;
+    lightF[2].outerCutOff = lightF[0].innerCutOff + 1.5;
+    lightF[2].c0 = 1.000;
+    lightF[2].c1 = 0.090;
+    lightF[2].c2 = 0.032;
 
 }
 
@@ -697,14 +771,42 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     for (int i = 0; i < NLP; i++) shaders.setLight("ulightP["+toString(i)+"]",lightP[i]);
     for (int i = 0; i < NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
 
-    for (int i = 0; i < NLP; i++) {
-        lightP[i].position = glm::vec3 (5.0, holoLevitatingY + 0.2, 0.0);
-    }
+    // POSITIONAL LIGHTS ----
+    // This light rotates clockwise and it's the closer one
+    lightP[0].position = glm::vec3(0.75 * glm::sin(glm::radians(holoRotating+1.0)), levitatingLights, 0.75 * glm::cos(glm::radians(holoRotating+1.0)));
+    glm::mat4 M = glm::translate(I,lightP[0].position) * glm::scale(I,glm::vec3(0.1));
+    texOrbs.diffuse = imgDiffuseWaterBlue.getTexture();
+    drawObjectTex(sphere,texOrbs,P,V,M);
 
-    for (int i = 0; i < NLF; i++) {
+    // This light rotates counter-clock wise and goes up when the other goes down and vice versa and it's the farest one
+    lightP[1].position = glm::vec3(1.5 * glm::sin(-glm::radians(holoRotating+2.0)), 3.5-levitatingLights, 1.5 * glm::cos(-glm::radians(holoRotating+2.0)));
+    M = glm::translate(I,lightP[1].position) * glm::scale(I,glm::vec3(0.1));
+    texOrbs.diffuse = imgDiffuseWaterOrange.getTexture();
+    drawObjectTex(sphere,texOrbs,P,V,M);
 
-        lightF[i].position = glm::vec3 (deathStarMovX, deathStarMovY, deathStarMovZ);
-        lightF[i].direction = glm::vec3 (glm::sin(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)), 0.0, glm::cos(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)));
+    // This lights rotates the same as the light 1 but: We first calculate the rotation movement for the 3rd light in light_2Rotation
+    // Secondly, we apply a 45 degrees of the axis for the rotation, and that value will be the value for the lightP[3]'s position
+    glm::vec3 light_2Rotation = glm::vec3(1.0 + glm::sin(-glm::radians(holoRotating+2.0)), 1.0, glm::cos(-glm::radians(holoRotating+2.0)));
+    lightP[2].position = glm::rotate(I, glm::radians(45.0f), glm::vec3(0, 0, 1)) * glm::vec4(light_2Rotation, 1.0);
+    M = glm::translate(I,lightP[2].position) * glm::scale(I,glm::vec3(0.1));
+    texOrbs.diffuse = imgDiffuseWaterPurple.getTexture();
+    drawObjectTex(sphere,texOrbs,P,V,M);
+
+    // FOCAL LIGHTS ----
+    // Death Star Light
+    lightF[0].position = glm::vec3(deathStarMovX, deathStarMovY, deathStarMovZ);
+    lightF[0].direction = glm::vec3(glm::sin(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)), 0.0, glm::cos(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)));
+
+    // X-Fighter Light
+    lightF[1].position = glm::vec3(2.1*glm::sin(glm::radians(xFighterOrientateY))+xFighterMovX, xFighterMovY,  2.1*glm::cos(glm::radians(xFighterOrientateY))+xFighterMovZ);
+    lightF[1].direction = glm::vec3(glm::sin(glm::radians(xFighterOrientateY)), 0.0, glm::cos(glm::radians(xFighterOrientateY)));
+
+    // Tie Fighter Light
+    lightF[2].position = glm::vec3(0.425*glm::sin(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical))+tieFighterMovX, 0.425*glm::sin(glm::radians(tieFighterOrientateVertical))+tieFighterMovY,  0.425*glm::cos(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical))+tieFighterMovZ);
+    lightF[2].direction = glm::vec3(glm::sin(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical)), sin(glm::radians(tieFighterOrientateVertical)), glm::cos(glm::radians(tieFighterOrientateY)))*glm::cos(glm::radians(tieFighterOrientateVertical));
+    for (int i = 0; i < NLF; ++i) {
+        glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
+        drawObjectMat(sphere,ruby,P,V,M);
     }
 
 }
@@ -998,22 +1100,22 @@ void drawR2D2Base(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // Base's articulation transformation matrix --> it's the part that connects the central wheel with the R2D2 body
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, -0.8)); // Principal translation
     glm::mat4 Rinclination = glm::rotate(I, glm::radians((float)(r2d2BowBody - 22.0)), glm::vec3(-1.0, 0.0, 0.0)); // Animation transformation (it inclinates the articulation)
-    glm::mat4 Tajustments = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody));    // It sets the articulation model connected to the base when the inclination is applicated
-    drawObjectMat(R2D2Articulation, metallicWhite, P, V, M * Tajustments * Rinclination * T);
+    glm::mat4 Tadjustments = glm::translate(I, glm::vec3(0.0, 0.0, r2d2PlaceBody));    // It sets the articulation model connected to the base when the inclination is applicated
+    drawObjectMat(R2D2Articulation, metallicWhite, P, V, M * Tadjustments * Rinclination * T);
     drawObjectMat(R2D2Wheel, metallicWhite, P, V, M);
 
 }
 
 void drawR2D2Top(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    // Head trnsformation matrix
+    // Head transformation matrix
     glm::mat4 TH = glm::translate(I, glm::vec3(0.0, 0.82, 0.1));
     glm::mat4 SH = glm::scale(I, glm::vec3(0.16, 0.14, 0.16));
     // Head Animation --> head rotating (looking side to side)
     glm::mat4 RH = glm::rotate(I, glm::radians(r2d2TurnHead), glm::vec3(0.0, 1.0, 0.0));
     drawR2D2Head(P, V, M * TH * RH * SH);
 
-    // Body trnasformation matrix
+    // Body transformation matrix
     glm::mat4 TB = glm::translate(I, glm::vec3(0.0, 0.25, 0.095));
     drawObjectTex(R2D2Body, texBodyR2D2, P, V, M * TB);
 
@@ -1094,18 +1196,18 @@ void drawTieFighterWingPanel(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 SinverseX = glm::scale(I, glm::vec3(-1.0, 1.0, 1.0));
 
     // Animation
-    glm::mat4 RaperturaAbajo = glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
-    glm::mat4 RaperturaArriba = glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 RdownOpening = glm::rotate(I, glm::radians(tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 RupOpening = glm::rotate(I, glm::radians(-tieFighterWingAperture), glm::vec3(1.0, 0.0, 0.0));
 
     // Lower part of the hexagon
-    drawTieFighterWingPanelTriangleNormal(P, V, M * RaperturaAbajo * T);
-    drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaArriba * T2 * T);
-    drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaArriba * SinverseX * T2 * T);
+    drawTieFighterWingPanelTriangleNormal(P, V, M * RdownOpening * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RupOpening * T2 * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RupOpening * SinverseX * T2 * T);
 
     // Upper part of the hexagon
-    drawTieFighterWingPanelTriangleNormal(P, V, M * RaperturaArriba * R180 * T);
-    drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaAbajo * SinverseX * T5 * R180 * T);
-    drawTieFighterWingPanelTriangleLateral(P, V, M * RaperturaAbajo * T5 * R180 * T);
+    drawTieFighterWingPanelTriangleNormal(P, V, M * RupOpening * R180 * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RdownOpening * SinverseX * T5 * R180 * T);
+    drawTieFighterWingPanelTriangleLateral(P, V, M * RdownOpening * T5 * R180 * T);
 
 }
 
@@ -1132,10 +1234,10 @@ void drawTieFighterBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0,1.0,0.0));
 
     // Motor transformation matrix
-    glm::mat4 Smotor = glm::scale(I, glm::vec3(0.5, 0.5, 0.95));
-    glm::mat4 Tmotor = glm::translate(I, glm::vec3(0.0, 0.0, -0.425));
+    glm::mat4 Sengine = glm::scale(I, glm::vec3(0.5, 0.5, 0.95));
+    glm::mat4 Tengine = glm::translate(I, glm::vec3(0.0, 0.0, -0.425));
 
-    drawObjectMat(tieFighterEngine, obsidian, P, V, M * R90 * Tmotor * Smotor);
+    drawObjectMat(tieFighterEngine, obsidian, P, V, M * R90 * Tengine * Sengine);
 
     // Window transformation matrix
     glm::mat4 Swindow = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
@@ -1216,7 +1318,7 @@ void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(tieFighterMovX, tieFighterMovY, tieFighterMovZ));
     glm::mat4 RtiefY = glm::rotate(I, glm::radians(tieFighterOrientateY), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 R = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
 
     // Arms transformation matrix
@@ -1247,14 +1349,21 @@ void drawHologramBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // Cylinder transformation matrix in order to make the base of the platform
     glm::mat4 Supper = glm::scale(I, glm::vec3(0.25, 0.325, 0.25));
     glm::mat4 Slower = glm::scale(I, glm::vec3(0.375, 0.03, 0.375));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
-    drawObjectTex(cylinder, texHoloBase,P,V,M*Supper*T);
-    drawObjectTex(cylinder, texHoloBase,P,V,M*Slower*T);
+    glm::mat4 Tupper= glm::translate(I, glm::vec3(0.0, 0.85, 0.0));
+    glm::mat4 Tlower= glm::translate(I, glm::vec3(0.0, 0.55, 0.0));
+    drawObjectTex(cylinder, texHoloBase,P,V,M*Tupper*Supper);
+    drawObjectTex(cylinder, texHoloBase,P,V,M*Tlower*Slower);
 
     // Sphere transformation matrix th's going to be set in the middle of the upper part of the platform created previously
-    glm::mat4 ThSphere = glm::translate(I, glm::vec3(2.0, 2.15, 2.0));
+    glm::mat4 ThSphere = glm::translate(I, glm::vec3(2.0, 4.5, 2.0));
     glm::mat4 ShSphere = glm::scale(I, glm::vec3(0.225, 0.225, 0.225));
-    drawObjectTex(halfSphere, texHoloSphere ,P,V,M*ShSphere*ThSphere);
+    drawObjectTex(halfSphere, texHoloSphere,P,V,M*ShSphere*ThSphere);
+
+    // Pedestal transformation matrix
+    glm::mat4 Spedestal = glm::scale(I, glm::vec3(0.1, 0.2, 0.1));
+    glm::mat4 Tpedestal = glm::translate(I, glm::vec3(0.0, 0.0, -0.05));
+
+    drawObjectTex(holoPedestal, texPedestal,P,V,M*Tpedestal*Spedestal);
 
 }
 
@@ -1297,19 +1406,34 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void hologramAutoRotation(int value) {
 
-    if (not holoUp) {
-        holoLevitatingY -= 0.005;
-        if(holoLevitatingY <= 0.775)
-            holoUp = true;
-    } else {
-        holoLevitatingY += 0.005;
-        if(holoLevitatingY >= 0.975)
-            holoUp = false;
-    }
+    if (animationAct) {
+        // Animation for hologram movement and for hologram lights
+        if (not holoUp) {
+            holoLevitatingY -= 0.005;
+            if (holoLevitatingY <= 1.375)
+                holoUp = true;
+        } else {
+            holoLevitatingY += 0.005;
+            if (holoLevitatingY >= 1.575)
+                holoUp = false;
+        }
 
-    holoRotating += 0.5;
-    glutPostRedisplay();
-    glutTimerFunc(speed, hologramAutoRotation ,0);
+        if (lightsUp) {
+            levitatingLights += 0.01;
+            if (levitatingLights >= 2.5)
+                lightsUp = false;
+        } else {
+            levitatingLights -= 0.01;
+            if (levitatingLights <= 1.5)
+                lightsUp = true;
+        }
+
+        holoRotating += 0.5;
+
+        glutPostRedisplay();
+        glutTimerFunc(speed, hologramAutoRotation, 0);
+
+    }
 
 }
 
@@ -1387,6 +1511,23 @@ void animateModel(unsigned char key, int x, int y) {
                 changeIntensity();
             }
             break;
+        case 's':
+            animationAct = not animationAct;
+            glutTimerFunc(speed, hologramAutoRotation, 0);
+            if (not animationAct) {
+                // Turn off the lights
+                for (int i = 0; i < NLP ; ++i){
+                    savedLightP[i] = lightP[i];
+                    lightP[i].ambient = glm::vec3(0.0, 0.0, 0.0);
+                    lightP[i].diffuse = glm::vec3(0.0, 0.0, 0.0);
+                    lightP[i].specular = glm::vec3(0.0, 0.0, 0.0);
+                }
+            } else {
+                // Turn on the lights
+                for (int i = 0; i < NLP ; ++i)
+                    lightP[i] = savedLightP[i];
+            }
+            break;
 
         // Death Star Animations
         if (selectedModel[0]) {
@@ -1402,12 +1543,6 @@ void animateModel(unsigned char key, int x, int y) {
             case 'D':
                 deathStarOrientateYTOP -= 5;
             break;
-            /*case 'o':
-                deathStarOrientateXZ += 5;
-                break;
-            case 'O':
-                deathStarOrientateXZ -= 5;
-                break;*/
         }
 
         // Battleship Animations
@@ -1445,13 +1580,14 @@ void animateModel(unsigned char key, int x, int y) {
                 }
             break;
         }
+
         // Tie Fighter Animations
         if (selectedModel[4]) {
             case 'y':
-                tieFighterOrientateVertical += 5;
+                tieFighterOrientateVertical -= 5;
             break;
             case 'Y':
-                tieFighterOrientateVertical -= 5;
+                tieFighterOrientateVertical += 5;
             break;
             case 'a':
                 if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
@@ -1468,9 +1604,11 @@ void animateModel(unsigned char key, int x, int y) {
 }
 
 void changeIntensity() {
+
     lightD[0].specular = glm::vec3(intensity, intensity, intensity);
     lightD[0].diffuse = glm::vec3(intensity, intensity, intensity);
     lightD[0].ambient = glm::vec3(intensity, intensity, intensity);
+
 }
 
 void modelMovementAndSelection(int key, int x, int y) {
