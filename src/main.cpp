@@ -105,6 +105,8 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
      // Terrain Scenario
         Model docker;
         Model dockerWindow;
+        Model dockerGatewayUp;
+        Model dockerGatewayDown;
 
      // General + common
         Model sphere;
@@ -239,7 +241,6 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     int w = 1024;
     int h = 768;
 
-
  // Model camera selection
     // selectDeathStar -> [0]
     // selectBattleship -> [1]
@@ -292,6 +293,10 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     bool  holoUp = false;
     bool  animationAct = true;
     float holoRotating = 1.0;
+
+ // Docker Gateway Opening animation variables
+    float openLeftGateway = 0.0;
+    float openRightGateway = 0.0;
 
  // Camera animation variables
     float bufferAlphaXDeathStar = 0.0;
@@ -428,6 +433,8 @@ void funInit() {
 
     docker.initModel("resources/models/Docker.obj");
     dockerWindow.initModel("resources/models/DockerWindow.obj");
+    dockerGatewayUp.initModel("resources/models/DockerGatewayUp.obj");
+    dockerGatewayDown.initModel("resources/models/DockerGatewayDown.obj");
 
  // Textures (images)
     imgNoEmissive.initTexture("resources/textures/noEmissiveGeneral.png");
@@ -1388,9 +1395,24 @@ void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawDocker(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Docker Body
     glm::mat4 S = glm::scale(I, glm::vec3(0.35, 0.35, 0.35));
+    glm::mat4 Sinverted = glm::scale(I, glm::vec3(0.35, 0.35, -0.35));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.125, 0.0));
     drawObjectTex(docker,texDocker,P,V,M*T*S);
+
+    glm::mat4 TopenUPLeft = glm::translate(I, glm::vec3(0.0, openLeftGateway, 0.0));
+    glm::mat4 TopenDOWNLeft = glm::translate(I, glm::vec3(0.0, -openLeftGateway, 0.0));
+    glm::mat4 TopenUPRight = glm::translate(I, glm::vec3(0.0, openRightGateway, 0.0));
+    glm::mat4 TopenDOWNRight = glm::translate(I, glm::vec3(0.0, -openRightGateway, 0.0));
+
+    // Left Gateway
+    drawObjectTex(dockerGatewayUp,texDocker,P,V,M*TopenUPLeft*T*S);
+    drawObjectTex(dockerGatewayDown,texDocker,P,V,M*TopenDOWNLeft*T*S);
+
+    // Right Gateway
+    drawObjectTex(dockerGatewayUp,texDocker,P,V,M*TopenUPRight*T*Sinverted);
+    drawObjectTex(dockerGatewayDown,texDocker,P,V,M*TopenDOWNRight*T*Sinverted);
 
 }
 
@@ -1500,7 +1522,7 @@ void animateModel(unsigned char key, int x, int y) {
 
     switch (key) {
         // Spaceships Up and Down Animations
-        case 'w' | 'W':  // Up
+        case 'w':  // Up
             if (selectedModel[0]) {
                 deathStarMovY += 0.2;
                 cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
@@ -1514,7 +1536,35 @@ void animateModel(unsigned char key, int x, int y) {
                 cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
             }
             break;
-        case 's' | 'S':  // Down
+        case 'W':  // Up
+            if (selectedModel[0]) {
+                deathStarMovY += 0.2;
+                cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
+            }
+            if (selectedModel[2]) {
+                xFighterMovY += 0.2;
+                cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
+            }
+            if (selectedModel[4]) {
+                tieFighterMovY += 0.2;
+                cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
+            }
+            break;
+        case 's':  // Down
+            if (selectedModel[0]) {
+                deathStarMovY -= 0.2;
+                cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
+            }
+            if (selectedModel[2]) {
+                xFighterMovY -= 0.2;
+                cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
+            }
+            if (selectedModel[4]) {
+                tieFighterMovY -= 0.2;
+                cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
+            }
+            break;
+        case 'S':  // Down
             if (selectedModel[0]) {
                 deathStarMovY -= 0.2;
                 cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
@@ -1561,73 +1611,88 @@ void animateModel(unsigned char key, int x, int y) {
             break;
 
         // Death Star Animations
-            case 'u':
-                if (selectedModel[0]) deathStarMovY -= 0.1;
+        case 'u':
+            if (selectedModel[0]) deathStarMovY -= 0.1;
             break;
-            case 'U':
-                if (selectedModel[0]) deathStarMovY += 0.1;
+        case 'U':
+            if (selectedModel[0]) deathStarMovY += 0.1;
             break;
-            case 'd':
-                if (selectedModel[0]) deathStarOrientateYTOP += 5;
+        case 'd':
+            if (selectedModel[0]) deathStarOrientateYTOP += 5;
             break;
-            case 'D':
-                if (selectedModel[0]) deathStarOrientateYTOP -= 5;
+        case 'D':
+            if (selectedModel[0]) deathStarOrientateYTOP -= 5;
             break;
 
         // Battleship Animations
         if (selectedModel[1]) {}
+
         // X-Fighter Animations
-            case 'x':
-                if (selectedModel[2])
-                    if (xFighterWingAperture > 0) xFighterWingAperture -= 1;
+        case 'x':
+            if (selectedModel[2])
+                if (xFighterWingAperture > 0) xFighterWingAperture -= 1;
             break;
-            case 'X':
-                if (selectedModel[2])
-                    if (xFighterWingAperture < 30) xFighterWingAperture += 1;
+        case 'X':
+            if (selectedModel[2])
+                if (xFighterWingAperture < 30) xFighterWingAperture += 1;
             break;
 
         // R2D2 Animations
-
-            case 'h':
-                if (selectedModel[3])
-                    if (r2d2TurnHead < 90) r2d2TurnHead += 3;
+        case 'h':
+            if (selectedModel[3])
+                if (r2d2TurnHead < 90) r2d2TurnHead += 3;
             break;
-            case 'H':
-                if (selectedModel[3])
-                    if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
+        case 'H':
+            if (selectedModel[3])
+                if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
             break;
-            case 'c':
-                if (selectedModel[3]) {
-                    if (r2d2BowBody < 22 && r2d2BowBody >= 0) {
-                        r2d2BowBody += 2;
-                        r2d2PlaceBody += 0.025;
-                    }
+        case 'c':
+            if (selectedModel[3]) {
+                if (r2d2BowBody < 22 && r2d2BowBody >= 0) {
+                    r2d2BowBody += 2;
+                    r2d2PlaceBody += 0.025;
                 }
+            }
             break;
-            case 'C':
-                if (selectedModel[3]) {
-                    if (r2d2BowBody <= 22 && r2d2BowBody > 0) {
-                        r2d2BowBody -= 2;
-                        r2d2PlaceBody -= 0.025;
-                    }
+        case 'C':
+            if (selectedModel[3]) {
+                if (r2d2BowBody <= 22 && r2d2BowBody > 0) {
+                    r2d2BowBody -= 2;
+                    r2d2PlaceBody -= 0.025;
                 }
+            }
             break;
 
         // Tie Fighter Animations
-            case 'y':
-                if (selectedModel[4]) tieFighterOrientateVertical -= 5;
+        case 'y':
+            if (selectedModel[4]) tieFighterOrientateVertical -= 5;
             break;
-            case 'Y':
-                if (selectedModel[4]) tieFighterOrientateVertical += 5;
+        case 'Y':
+            if (selectedModel[4]) tieFighterOrientateVertical += 5;
             break;
-            case 'a':
-                if (selectedModel[4])
-                    if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
+        case 'a':
+            if (selectedModel[4])
+                if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
             break;
-            case 'A':
-                if (selectedModel[4])
-                    if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
+        case 'A':
+            if (selectedModel[4])
+                if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
             break;
+
+        // Docker Gateway Opening Animation
+        case 'o':
+            if (openLeftGateway < 4.5) openLeftGateway += 0.1;
+            break;
+        case 'O':
+            if (openLeftGateway > 0.0) openLeftGateway -= 0.1;
+            break;
+        case 'p':
+            if (openRightGateway < 4.5) openRightGateway += 0.1;
+            break;
+        case 'P':
+            if (openRightGateway > 0.0) openRightGateway -= 0.1;
+            break;
+
         default:
             break;
     }
