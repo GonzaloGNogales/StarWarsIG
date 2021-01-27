@@ -803,7 +803,8 @@ void setLights(glm::mat4 P, glm::mat4 V) {
 
     // Tie Fighter Light
     lightF[2].position = glm::vec3(0.425*glm::sin(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical))+tieFighterMovX, 0.425*glm::sin(glm::radians(tieFighterOrientateVertical))+tieFighterMovY,  0.425*glm::cos(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical))+tieFighterMovZ);
-    lightF[2].direction = glm::vec3(glm::sin(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical)), sin(glm::radians(tieFighterOrientateVertical)), glm::cos(glm::radians(tieFighterOrientateY)))*glm::cos(glm::radians(tieFighterOrientateVertical));
+    lightF[2].direction = glm::vec3(glm::sin(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical)), sin(glm::radians(tieFighterOrientateVertical)), glm::cos(glm::radians(tieFighterOrientateY))*glm::cos(glm::radians(tieFighterOrientateVertical)));
+
     for (int i = 0; i < NLF; ++i) {
         glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
         drawObjectMat(sphere,ruby,P,V,M);
@@ -1318,7 +1319,7 @@ void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(tieFighterMovX, tieFighterMovY, tieFighterMovZ));
     glm::mat4 RtiefY = glm::rotate(I, glm::radians(tieFighterOrientateY), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 RtiefUpDown = glm::rotate(I, glm::radians(tieFighterOrientateVertical), glm::vec3(-1.0, 0.0, 0.0));
     glm::mat4 R = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
 
     // Arms transformation matrix
@@ -1387,16 +1388,16 @@ void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawDocker(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 S = glm::scale(I, glm::vec3(0.8, 0.8, 0.8));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    glm::mat4 S = glm::scale(I, glm::vec3(0.35, 0.35, 0.35));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.125, 0.0));
     drawObjectTex(docker,texDocker,P,V,M*T*S);
 
 }
 
 void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 S = glm::scale(I, glm::vec3(0.8, 0.8, 0.8));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    glm::mat4 S = glm::scale(I, glm::vec3(0.35, 0.35, 0.35));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 1.125, 0.0));
     drawObjectMat(dockerWindow,matWindowDocker,P,V,M*T*S);
 
 }
@@ -1498,6 +1499,36 @@ void cameraMovement(int x, int y) {
 void animateModel(unsigned char key, int x, int y) {
 
     switch (key) {
+        // Spaceships Up and Down Animations
+        case 'w' | 'W':  // Up
+            if (selectedModel[0]) {
+                deathStarMovY += 0.2;
+                cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
+            }
+            if (selectedModel[2]) {
+                xFighterMovY += 0.2;
+                cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
+            }
+            if (selectedModel[4]) {
+                tieFighterMovY += 0.2;
+                cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
+            }
+            break;
+        case 's' | 'S':  // Down
+            if (selectedModel[0]) {
+                deathStarMovY -= 0.2;
+                cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
+            }
+            if (selectedModel[2]) {
+                xFighterMovY -= 0.2;
+                cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
+            }
+            if (selectedModel[4]) {
+                tieFighterMovY -= 0.2;
+                cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
+            }
+            break;
+
         // Light Animations
         case 'g':
             if(intensity > 0.0) {
@@ -1511,7 +1542,7 @@ void animateModel(unsigned char key, int x, int y) {
                 changeIntensity();
             }
             break;
-        case 's':
+        case 't':
             animationAct = not animationAct;
             glutTimerFunc(speed, hologramAutoRotation, 0);
             if (not animationAct) {
@@ -1530,72 +1561,73 @@ void animateModel(unsigned char key, int x, int y) {
             break;
 
         // Death Star Animations
-        if (selectedModel[0]) {
             case 'u':
-                deathStarMovY -= 0.1;
+                if (selectedModel[0]) deathStarMovY -= 0.1;
             break;
             case 'U':
-                deathStarMovY += 0.1;
+                if (selectedModel[0]) deathStarMovY += 0.1;
             break;
             case 'd':
-                deathStarOrientateYTOP += 5;
+                if (selectedModel[0]) deathStarOrientateYTOP += 5;
             break;
             case 'D':
-                deathStarOrientateYTOP -= 5;
+                if (selectedModel[0]) deathStarOrientateYTOP -= 5;
             break;
-        }
 
         // Battleship Animations
         if (selectedModel[1]) {}
         // X-Fighter Animations
-        if (selectedModel[2]) {
             case 'x':
-                if (xFighterWingAperture > 0)
-                    xFighterWingAperture -= 1;
+                if (selectedModel[2])
+                    if (xFighterWingAperture > 0) xFighterWingAperture -= 1;
             break;
             case 'X':
-                if (xFighterWingAperture < 30)
-                    xFighterWingAperture += 1;
+                if (selectedModel[2])
+                    if (xFighterWingAperture < 30) xFighterWingAperture += 1;
             break;
-        }
 
         // R2D2 Animations
-        if (selectedModel[3]) {
+
             case 'h':
-                if (r2d2TurnHead < 90) r2d2TurnHead += 3;
+                if (selectedModel[3])
+                    if (r2d2TurnHead < 90) r2d2TurnHead += 3;
             break;
             case 'H':
-                if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
+                if (selectedModel[3])
+                    if (r2d2TurnHead > -90) r2d2TurnHead -= 3;
             break;
             case 'c':
-                if (r2d2BowBody < 22 && r2d2BowBody >= 0) {
-                    r2d2BowBody += 2;
-                    r2d2PlaceBody += 0.025;
+                if (selectedModel[3]) {
+                    if (r2d2BowBody < 22 && r2d2BowBody >= 0) {
+                        r2d2BowBody += 2;
+                        r2d2PlaceBody += 0.025;
+                    }
                 }
             break;
             case 'C':
-                if (r2d2BowBody <= 22 && r2d2BowBody > 0) {
-                    r2d2BowBody -= 2;
-                    r2d2PlaceBody -= 0.025;
+                if (selectedModel[3]) {
+                    if (r2d2BowBody <= 22 && r2d2BowBody > 0) {
+                        r2d2BowBody -= 2;
+                        r2d2PlaceBody -= 0.025;
+                    }
                 }
             break;
-        }
 
         // Tie Fighter Animations
-        if (selectedModel[4]) {
             case 'y':
-                tieFighterOrientateVertical -= 5;
+                if (selectedModel[4]) tieFighterOrientateVertical -= 5;
             break;
             case 'Y':
-                tieFighterOrientateVertical += 5;
+                if (selectedModel[4]) tieFighterOrientateVertical += 5;
             break;
             case 'a':
-                if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
+                if (selectedModel[4])
+                    if (tieFighterWingAperture < 65) tieFighterWingAperture += 3;
             break;
             case 'A':
-                if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
+                if (selectedModel[4])
+                    if (tieFighterWingAperture > 0) tieFighterWingAperture -= 3;
             break;
-        }
         default:
             break;
     }
@@ -1639,45 +1671,45 @@ void modelMovementAndSelection(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_UP:
             if (selectedModel[0]) {
-                moveDeathStar(0.25);
+                moveDeathStar(0.4);
                 cameraRepositioning(deathStarMovX, deathStarMovY, deathStarMovZ, alphaXDeathStar, alphaYDeathStar);
             }
             if (selectedModel[1]) {
-                moveBattleship(0.4);
+                moveBattleship(0.2);
                 cameraRepositioning(battleshipMovX, battleshipMovY, battleshipMovZ, alphaXBattleship, alphaYBattleship);
             }
             if (selectedModel[2]) {
-                moveXFighter(0.8);
+                moveXFighter(0.4);
                 cameraRepositioning(xFighterMovX, xFighterMovY, xFighterMovZ, alphaXXFighter, alphaYXFighter);
             }
             if (selectedModel[3]) {
-                moveR2D2(0.4);
+                moveR2D2(0.2);
                 cameraRepositioning(r2d2MovX, r2d2MovY, r2d2MovZ, alphaXR2D2, alphaYR2D2);
             }
             if (selectedModel[4]) {
-                moveTieFighter(0.8);
+                moveTieFighter(0.4);
                 cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
             }
             break;
         case GLUT_KEY_DOWN:
             if (selectedModel[0]) {
-                moveDeathStar(-0.1);
+                moveDeathStar(-0.2);
                 cameraRepositioning(deathStarMovX,deathStarMovY,deathStarMovZ,alphaXDeathStar,alphaYDeathStar);
             }
             if (selectedModel[1]) {
-                moveBattleship(-0.1);
+                moveBattleship(-0.2);
                 cameraRepositioning(battleshipMovX,battleshipMovY,battleshipMovZ,alphaXBattleship,alphaYBattleship);
             }
             if (selectedModel[2]) {
-                moveXFighter(-0.2);
+                moveXFighter(-0.3);
                 cameraRepositioning(xFighterMovX,xFighterMovY,xFighterMovZ,alphaXXFighter,alphaYXFighter);
             }
             if (selectedModel[3]) {
-                moveR2D2(-0.1);
+                moveR2D2(-0.2);
                 cameraRepositioning(r2d2MovX,r2d2MovY,r2d2MovZ,alphaXR2D2,alphaYR2D2);
             }
             if (selectedModel[4]) {
-                moveTieFighter(-0.2);
+                moveTieFighter(-0.3);
                 cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
             }
             break;
