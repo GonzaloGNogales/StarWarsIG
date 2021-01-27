@@ -798,7 +798,7 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     lightF[0].direction = glm::vec3(glm::sin(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)), 0.0, glm::cos(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)));
 
     // X-Fighter Light
-    lightF[1].position = glm::vec3(2.1*glm::sin(glm::radians(xFighterOrientateY))+xFighterMovX, xFighterMovY,  2.1*glm::cos(glm::radians(xFighterOrientateY))+xFighterMovZ);
+    lightF[1].position = glm::vec3(2.1*glm::sin(glm::radians(xFighterOrientateY))+xFighterMovX, xFighterMovY,2.1*glm::cos(glm::radians(xFighterOrientateY))+xFighterMovZ);
     lightF[1].direction = glm::vec3(glm::sin(glm::radians(xFighterOrientateY)), 0.0, glm::cos(glm::radians(xFighterOrientateY)));
 
     // Tie Fighter Light
