@@ -4,10 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Model.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Model.cpp.obj"
-  "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Shaders.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj"
-  "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/Texture.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj"
-  "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/src/main.cpp" "C:/Users/gonza/CLionProjects/ComputerGraphics/practicaFinal/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/main.cpp.obj"
+  "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Model.cpp" "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Model.cpp.obj"
+  "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Shaders.cpp" "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Shaders.cpp.obj"
+  "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Texture.cpp" "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/Texture.cpp.obj"
+  "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/main.cpp" "C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/practicaFinal.dir/src/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

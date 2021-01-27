@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-set(PROJECT_NAME practicaFinal)
+set(PROJECT_NAME StarWarsIG)
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 14)
 

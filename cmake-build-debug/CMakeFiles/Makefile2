@@ -63,16 +63,16 @@ RM = C:\Users\gonza\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.6682.181
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\gonza\CLionProjects\ComputerGraphics\practicaFinal
+CMAKE_SOURCE_DIR = "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\gonza\CLionProjects\ComputerGraphics\practicaFinal\cmake-build-debug
+CMAKE_BINARY_DIR = "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug"
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/practicaFinal.dir/all
+all: CMakeFiles/StarWarsIG.dir/all
 
 .PHONY : all
 
@@ -82,36 +82,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/practicaFinal.dir/clean
+clean: CMakeFiles/StarWarsIG.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/practicaFinal.dir
+# Target rules for target CMakeFiles/StarWarsIG.dir
 
 # All Build rule for target.
-CMakeFiles/practicaFinal.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\practicaFinal.dir\build.make CMakeFiles/practicaFinal.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\practicaFinal.dir\build.make CMakeFiles/practicaFinal.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\gonza\CLionProjects\ComputerGraphics\practicaFinal\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4,5 "Built target practicaFinal"
-.PHONY : CMakeFiles/practicaFinal.dir/all
+CMakeFiles/StarWarsIG.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\StarWarsIG.dir\build.make CMakeFiles/StarWarsIG.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\StarWarsIG.dir\build.make CMakeFiles/StarWarsIG.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=1,2,3,4,5 "Built target StarWarsIG"
+.PHONY : CMakeFiles/StarWarsIG.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/practicaFinal.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\gonza\CLionProjects\ComputerGraphics\practicaFinal\cmake-build-debug\CMakeFiles 5
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/practicaFinal.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\gonza\CLionProjects\ComputerGraphics\practicaFinal\cmake-build-debug\CMakeFiles 0
-.PHONY : CMakeFiles/practicaFinal.dir/rule
+CMakeFiles/StarWarsIG.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" 5
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/StarWarsIG.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" 0
+.PHONY : CMakeFiles/StarWarsIG.dir/rule
 
 # Convenience name for target.
-practicaFinal: CMakeFiles/practicaFinal.dir/rule
+StarWarsIG: CMakeFiles/StarWarsIG.dir/rule
 
-.PHONY : practicaFinal
+.PHONY : StarWarsIG
 
 # clean rule for target.
-CMakeFiles/practicaFinal.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\practicaFinal.dir\build.make CMakeFiles/practicaFinal.dir/clean
-.PHONY : CMakeFiles/practicaFinal.dir/clean
+CMakeFiles/StarWarsIG.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\StarWarsIG.dir\build.make CMakeFiles/StarWarsIG.dir/clean
+.PHONY : CMakeFiles/StarWarsIG.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
@@ -120,7 +120,7 @@ CMakeFiles/practicaFinal.dir/clean:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -P C:\Users\gonza\CLionProjects\ComputerGraphics\practicaFinal\cmake-build-debug\CMakeFiles\VerifyGlobs.cmake
+	$(CMAKE_COMMAND) -P "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles\VerifyGlobs.cmake"
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
