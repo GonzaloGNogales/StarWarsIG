@@ -1,3 +1,3 @@
-C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/StarWarsIG.dir
-C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/cmake-build-debug/CMakeFiles/StarWarsIG.dir
+C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -130,8 +130,8 @@ CMakeFiles/StarWarsIG.dir/src/Model.cpp.obj
  ../../libraries/includes/glm/vec4.hpp
  ../../libraries/includes/glm/vector_relational.hpp
  ../../libraries/includes/ogl/glew.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Model.cpp
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Model.h
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Model.cpp
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Model.h
 CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj
  ../../libraries/includes/glm/common.hpp
  ../../libraries/includes/glm/detail/_fixes.hpp
@@ -235,13 +235,13 @@ CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj
  ../../libraries/includes/glm/vec4.hpp
  ../../libraries/includes/glm/vector_relational.hpp
  ../../libraries/includes/ogl/glew.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Shaders.cpp
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Shaders.h
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Shaders.cpp
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Shaders.h
 CMakeFiles/StarWarsIG.dir/src/Texture.cpp.obj
  ../../libraries/includes/freeimage/freeImage.h
  ../../libraries/includes/ogl/glew.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Texture.cpp
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Texture.h
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Texture.cpp
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Texture.h
 CMakeFiles/StarWarsIG.dir/src/main.cpp.obj
  ../../libraries/includes/assimp/Compiler/poppack1.h
  ../../libraries/includes/assimp/Compiler/pstdint.h
@@ -377,7 +377,7 @@ CMakeFiles/StarWarsIG.dir/src/main.cpp.obj
  ../../libraries/includes/ogl/freeglut_ext.h
  ../../libraries/includes/ogl/freeglut_std.h
  ../../libraries/includes/ogl/glew.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Model.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Shaders.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/Texture.h
- C:/Users/gonza/Desktop/ANA VERSION PRACTICA IG/StarWarsIG/src/main.cpp
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Model.h
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Shaders.h
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Texture.h
+ C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/main.cpp

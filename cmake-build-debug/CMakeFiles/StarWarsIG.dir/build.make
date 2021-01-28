@@ -62,10 +62,10 @@ RM = C:\Users\gonza\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.6682.181
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG"
+CMAKE_SOURCE_DIR = "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug"
+CMAKE_BINARY_DIR = "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/StarWarsIG.dir/depend.make
@@ -79,58 +79,58 @@ include CMakeFiles/StarWarsIG.dir/flags.make
 CMakeFiles/StarWarsIG.dir/src/Model.cpp.obj: CMakeFiles/StarWarsIG.dir/flags.make
 CMakeFiles/StarWarsIG.dir/src/Model.cpp.obj: CMakeFiles/StarWarsIG.dir/includes_CXX.rsp
 CMakeFiles/StarWarsIG.dir/src/Model.cpp.obj: ../src/Model.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/StarWarsIG.dir/src/Model.cpp.obj"
-	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\Model.cpp.obj -c "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Model.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/StarWarsIG.dir/src/Model.cpp.obj"
+	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\Model.cpp.obj -c "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Model.cpp"
 
 CMakeFiles/StarWarsIG.dir/src/Model.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/StarWarsIG.dir/src/Model.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Model.cpp" > CMakeFiles\StarWarsIG.dir\src\Model.cpp.i
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Model.cpp" > CMakeFiles\StarWarsIG.dir\src\Model.cpp.i
 
 CMakeFiles/StarWarsIG.dir/src/Model.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/StarWarsIG.dir/src/Model.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Model.cpp" -o CMakeFiles\StarWarsIG.dir\src\Model.cpp.s
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Model.cpp" -o CMakeFiles\StarWarsIG.dir\src\Model.cpp.s
 
 CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj: CMakeFiles/StarWarsIG.dir/flags.make
 CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj: CMakeFiles/StarWarsIG.dir/includes_CXX.rsp
 CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj: ../src/Shaders.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj"
-	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\Shaders.cpp.obj -c "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Shaders.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.obj"
+	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\Shaders.cpp.obj -c "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Shaders.cpp"
 
 CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Shaders.cpp" > CMakeFiles\StarWarsIG.dir\src\Shaders.cpp.i
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Shaders.cpp" > CMakeFiles\StarWarsIG.dir\src\Shaders.cpp.i
 
 CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/StarWarsIG.dir/src/Shaders.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Shaders.cpp" -o CMakeFiles\StarWarsIG.dir\src\Shaders.cpp.s
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Shaders.cpp" -o CMakeFiles\StarWarsIG.dir\src\Shaders.cpp.s
 
 CMakeFiles/StarWarsIG.dir/src/Texture.cpp.obj: CMakeFiles/StarWarsIG.dir/flags.make
 CMakeFiles/StarWarsIG.dir/src/Texture.cpp.obj: CMakeFiles/StarWarsIG.dir/includes_CXX.rsp
 CMakeFiles/StarWarsIG.dir/src/Texture.cpp.obj: ../src/Texture.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/StarWarsIG.dir/src/Texture.cpp.obj"
-	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\Texture.cpp.obj -c "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Texture.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/StarWarsIG.dir/src/Texture.cpp.obj"
+	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\Texture.cpp.obj -c "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Texture.cpp"
 
 CMakeFiles/StarWarsIG.dir/src/Texture.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/StarWarsIG.dir/src/Texture.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Texture.cpp" > CMakeFiles\StarWarsIG.dir\src\Texture.cpp.i
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Texture.cpp" > CMakeFiles\StarWarsIG.dir\src\Texture.cpp.i
 
 CMakeFiles/StarWarsIG.dir/src/Texture.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/StarWarsIG.dir/src/Texture.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\Texture.cpp" -o CMakeFiles\StarWarsIG.dir\src\Texture.cpp.s
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\Texture.cpp" -o CMakeFiles\StarWarsIG.dir\src\Texture.cpp.s
 
 CMakeFiles/StarWarsIG.dir/src/main.cpp.obj: CMakeFiles/StarWarsIG.dir/flags.make
 CMakeFiles/StarWarsIG.dir/src/main.cpp.obj: CMakeFiles/StarWarsIG.dir/includes_CXX.rsp
 CMakeFiles/StarWarsIG.dir/src/main.cpp.obj: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/StarWarsIG.dir/src/main.cpp.obj"
-	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\main.cpp.obj -c "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\main.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/StarWarsIG.dir/src/main.cpp.obj"
+	C:\MinGW\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\StarWarsIG.dir\src\main.cpp.obj -c "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\main.cpp"
 
 CMakeFiles/StarWarsIG.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/StarWarsIG.dir/src/main.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\main.cpp" > CMakeFiles\StarWarsIG.dir\src\main.cpp.i
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\main.cpp" > CMakeFiles\StarWarsIG.dir\src\main.cpp.i
 
 CMakeFiles/StarWarsIG.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/StarWarsIG.dir/src/main.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\src\main.cpp" -o CMakeFiles\StarWarsIG.dir\src\main.cpp.s
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\src\main.cpp" -o CMakeFiles\StarWarsIG.dir\src\main.cpp.s
 
 # Object files for target StarWarsIG
 StarWarsIG_OBJECTS = \
@@ -150,7 +150,7 @@ binary/StarWarsIG.exe: CMakeFiles/StarWarsIG.dir/build.make
 binary/StarWarsIG.exe: CMakeFiles/StarWarsIG.dir/linklibs.rsp
 binary/StarWarsIG.exe: CMakeFiles/StarWarsIG.dir/objects1.rsp
 binary/StarWarsIG.exe: CMakeFiles/StarWarsIG.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable binary\StarWarsIG.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable binary\StarWarsIG.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\StarWarsIG.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -163,6 +163,6 @@ CMakeFiles/StarWarsIG.dir/clean:
 .PHONY : CMakeFiles/StarWarsIG.dir/clean
 
 CMakeFiles/StarWarsIG.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG" "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG" "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug" "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug" "C:\Users\gonza\Desktop\ANA VERSION PRACTICA IG\StarWarsIG\cmake-build-debug\CMakeFiles\StarWarsIG.dir\DependInfo.cmake" --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG" "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG" "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug" "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug" "C:\Users\gonza\Desktop\IG PRAC\StarWarsIG\cmake-build-debug\CMakeFiles\StarWarsIG.dir\DependInfo.cmake" --color=$(COLOR)
 .PHONY : CMakeFiles/StarWarsIG.dir/depend
 

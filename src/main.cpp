@@ -99,17 +99,17 @@ void drawDocker(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 
-// Shaders variable
-Shaders shaders;
+ // Shaders variable
+    Shaders shaders;
 
-// Model variables
-// Terrain Scenario
+ // Model variables
+ // Terrain Scenario
     Model docker;
     Model dockerWindow;
     Model dockerGatewayUp;
     Model dockerGatewayDown;
 
-// General + common
+ // General + common
     Model sphere;
     Model cylinder;
     Model cube;
@@ -117,11 +117,11 @@ Shaders shaders;
     Model halfSphere;
     Model truncatedPyramid;
 
-// Death Star
+ // Death Star
     Model deathStarBottom;
     Model deathStarTop;
 
-// Battleship
+ // Battleship
     Model battleshipFoot;
     Model battleshipJoint;
     Model battleshipCalf;
@@ -129,13 +129,13 @@ Shaders shaders;
     Model battleshipBody;
     Model battleshipHead;
 
-// X-Fighter Wing
+ // X-Fighter Wing
     Model xfighterWingL;
     Model xfighterWingR;
     Model xfighterTape;
     Model xfighterBody;
 
-// R2D2
+ // R2D2
     Model R2D2hollowCylinder;
     Model R2D2Body;
     Model R2D2Arm;
@@ -143,17 +143,17 @@ Shaders shaders;
     Model R2D2Articulation;
     Model R2D2BigCamera;
 
-// Tie Fighter
+ // Tie Fighter
     Model tieFighterEngine;
     Model tieFighterWindowStructure;
     Model tieFighterWindowGlass;
     Model tieFighterWingDetail;
 
-// Baby Yoda Hologram
+ // Baby Yoda Hologram
     Model babyYoda;
     Model holoPedestal;
 
-// Texture variables
+ // Texture variables
     Texture imgNoEmissive;
     Texture imgSpecularLightnings;
 
@@ -163,6 +163,7 @@ Shaders shaders;
     Texture imgDiffuseBattleship;
     Texture imgDiffuseBattleshipHead;
     Texture imgEmissiveBattleshipHead;
+    Texture imgDiffuseBattleshipAlternative;
 
     Texture imgDiffuseXFighterWing;
     Texture imgDiffuseXFighterBody;
@@ -202,8 +203,8 @@ Shaders shaders;
     Texture imgNormalDockerGatewayDown;
     Texture imgEmissiveDockerGatewayUp_Down;
 
-// Lights and Materials
-// Lights
+ // Lights and Materials
+ // Lights
     #define NLD 1
     #define NLP 3
     #define NLF 3
@@ -213,43 +214,57 @@ Shaders shaders;
     Light lightP[NLP];
     Light lightF[NLF];
 
-// Materials
+    // This variables will be used to animate textures and materials
+    #define NT  3
+    Textures savedTex[NT];    // 0 -> blueOrb  1 -> orangeOrb 2 -> purpleOrb
+    Material savedHolo;     // BabyYoda saved material
+
+ // Materials
     Material  ruby;
     Material  metallicWhite;
     Material  matHolo;
     Material  matWindowDocker;
     Material  obsidian;
 
-// Textures
+ // Textures
+    // Death Star
     Textures  texDeathStarUp;
     Textures  texDeathStarDown;
 
+    // Battleship
     Textures  texBattleshipBody;
     Textures  texBattleshipHead;
 
+    // X-Fighter
     Textures  texXFighterWing;
     Textures  texXFighterBody;
 
+    // R2D2
     Textures  texBigCamera;
     Textures  texHeadR2D2;
     Textures  texBodyR2D2;
     Textures  texArmR2D2;
 
+    // Tie Fighter
     Textures  texTieFighterWingPanel;
     Textures  texTieFighterBody;
     Textures  texTieFighterWindow;
     Textures  texTieFighterOuterWindow;
 
+    // BabyYoda Hologram
     Textures  texHoloBase;
     Textures  texHoloSphere;
     Textures  texPedestal;
-    Textures  texOrbs;
+    Textures  texOrbBlue;
+    Textures  texOrbOrange;
+    Textures  texOrbPurple;
 
+    // Docker
     Textures  texDocker;
     Textures  texDockerGatewayUp;
     Textures  texDockerGatewayDown;
 
-// Viewport variables
+ // Viewport variables
     int w = 1024;
     int h = 768;
 
@@ -262,27 +277,28 @@ Shaders shaders;
     bool selectedModel[N_MODELS];
     bool keyStates[256];
 
-// Death Star animation variables
+ // Death Star animation variables
     float deathStarMovX = 15.5;
     float deathStarMovY = 10.5;
     float deathStarMovZ = 16.0;
     float deathStarOrientateY = -160.0;
     float deathStarOrientateYTOP = 0.0;
 
-// Battleship animation variables
+ // Battleship animation variables
     float battleshipMovX = 4.0;
     float battleshipMovY = 0.0;
     float battleshipMovZ = 8.8;
     float battleshipOrientateY = 180.0;
+    bool texActBattleShip = true;
 
-// X-Fighter animation variables
+ // X-Fighter animation variables
     float xFighterMovX = 12.5;
     float xFighterMovY = 9.0;
     float xFighterMovZ = 5.6;
     float xFighterOrientateY = 180.0;
     float xFighterWingAperture = 15.0;
 
-// R2D2 animation variables
+ // R2D2 animation variables
     float r2d2MovX = 3.9;
     float r2d2MovY = 0.0;
     float r2d2MovZ = -6.0;
@@ -291,7 +307,7 @@ Shaders shaders;
     float r2d2BowBody = 22.0;
     float r2d2PlaceBody = 0.0;
 
-// Tie Fighter animation variables
+ // Tie Fighter animation variables
     float tieFighterMovX = 13.0;
     float tieFighterMovY = 9.5;
     float tieFighterMovZ = -7.5;
@@ -299,18 +315,19 @@ Shaders shaders;
     float tieFighterWingAperture = 0.0;
     float tieFighterOrientateVertical = 0.0;
 
-// Baby Yoda Holo animation variables
+ // Baby Yoda Holo animation variables
     GLint speed = 20;  // 20 ms
     float holoLevitatingY = 1.375;
-    bool  holoUp = false;
-    bool  animationAct = true;
+    bool holoUp = false;
+    bool animationAct = true;
+    bool texActHolo = true;
     float holoRotating = 1.0;
 
-// Docker Gateway Opening animation variables
+ // Docker Gateway Opening animation variables
     float openLeftGateway = 0.0;
     float openRightGateway = 0.0;
 
-// Camera animation variables
+ // Camera animation variables
     float bufferAlphaXDeathStar = -160.0;
     float bufferAlphaYDeathStar = 0.0;
     float bufferAlphaXBattleship = 180.0;
@@ -342,7 +359,7 @@ Shaders shaders;
     float zoom = 90.0;
     bool centerAtOrigin = true;
 
-//Lights
+ // Lights
     float intensity = 0.7;
     float levitatingLights = 1.5;
     bool  lightsUp = false;
@@ -364,7 +381,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(w,h);
     glutInitWindowPosition(425,150);
-    glutCreateWindow("Trabajo Final");
+    glutCreateWindow("Final Practice");
 
     // GLEW init
     glewExperimental = GL_TRUE;
@@ -410,6 +427,7 @@ void funInit() {
     shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
 
     // Models
+    // M_Common - General
     cylinder.initModel("resources/models/Cylinder.obj");
     sphere.initModel("resources/models/Sphere.obj");
     triangle.initModel("resources/models/Triangle.obj");
@@ -417,9 +435,11 @@ void funInit() {
     halfSphere.initModel("resources/models/HalfSphere.obj");
     truncatedPyramid.initModel("resources/models/TruncatedPyramid.obj");
 
+    // M_DeathStar
     deathStarBottom.initModel("resources/models/DeathStarUnder.obj");
     deathStarTop.initModel("resources/models/DeathStarTop.obj");
 
+    // M_BattleShip
     battleshipFoot.initModel("resources/models/BattleshipFoot.obj");
     battleshipJoint.initModel("resources/models/BattleshipJoint.obj");
     battleshipCalf.initModel("resources/models/BattleshipCalf.obj");
@@ -427,11 +447,13 @@ void funInit() {
     battleshipBody.initModel("resources/models/BattleshipBody.obj");
     battleshipHead.initModel("resources/models/BattleshipHead.obj");
 
+    // M_X-Fighter
     xfighterWingL.initModel("resources/models/XFighterWingL.obj");
     xfighterWingR.initModel("resources/models/XFighterWingR.obj");
     xfighterTape.initModel("resources/models/XFighterTape.obj");
     xfighterBody.initModel("resources/models/XFighterBody.obj");
 
+    // M_R2D2
     R2D2hollowCylinder.initModel("resources/models/HollowCylinder.obj");
     R2D2Body.initModel("resources/models/R2D2Body.obj");
     R2D2Arm.initModel("resources/models/R2D2Arm.obj");
@@ -439,14 +461,17 @@ void funInit() {
     R2D2Articulation.initModel("resources/models/R2D2Articulation.obj");
     R2D2BigCamera.initModel("resources/models/R2D2BigCamera.obj");
 
+    // M_TieFighter
     tieFighterEngine.initModel("resources/models/TieFighterEngine.obj");
     tieFighterWindowStructure.initModel("resources/models/TieFighterWindow.obj");
     tieFighterWindowGlass.initModel("resources/models/TieFighterWindowGlass.obj");
     tieFighterWingDetail.initModel("resources/models/TieFighterWingDetail.obj");
 
+    // M_Baby Yoda Hologram
     babyYoda.initModel("resources/models/BabyYoda.obj");
     holoPedestal.initModel("resources/models/HoloPedestal.obj");
 
+    // M_Docker
     docker.initModel("resources/models/Docker.obj");
     dockerWindow.initModel("resources/models/DockerWindow.obj");
     dockerGatewayUp.initModel("resources/models/DockerGatewayUp.obj");
@@ -456,35 +481,36 @@ void funInit() {
     imgNoEmissive.initTexture("resources/textures/noEmissiveGeneral.png");
     imgMetallicSpecular.initTexture("resources/textures/metallicSpecular.png");
 
-    // DeathStar
+    // T_DeathStar
     imgDiffuseDeathStarUp.initTexture("resources/textures/diffuseDeathStarUp.png");
     imgDiffuseDeathStarDown.initTexture("resources/textures/diffuseDeathStarDown.png");
 
-    // BattleShip
+    // T_BattleShip
     imgDiffuseBattleship.initTexture("resources/textures/diffuseBattleship.png");
     imgDiffuseBattleshipHead.initTexture("resources/textures/diffuseBattleshipHead.png");
     imgEmissiveBattleshipHead.initTexture("resources/textures/emissiveBattleshipHead.png");
+    imgDiffuseBattleshipAlternative.initTexture("resources/textures/diffuseStrange.png");
 
-    // X-Fighter
+    // T_X-Fighter
     imgDiffuseXFighterWing.initTexture("resources/textures/diffuseXFighterWing.png");
     imgDiffuseXFighterBody.initTexture("resources/textures/diffuseXFighterBody.png");
     imgSpecularXFighterWing.initTexture("resources/textures/specularXFighterWing.png");
     imgSpecularXFighterBody.initTexture("resources/textures/specularXFighterBody.png");
 
-    // R2D2
+    // T_R2D2
     imgDiffuseBigCamera.initTexture("resources/textures/diffuseBigCameraR2D2.png");
     imgDiffuseHeadR2D2.initTexture("resources/textures/diffuseHeadR2D2.png");
     imgDiffuseBodyR2D2.initTexture("resources/textures/diffuseBodyR2D2.png");
     imgDiffuseArmR2D2.initTexture("resources/textures/diffuseArmR2D2.png");
 
-    // TieFighter
+    // T_TieFighter
     imgTiefWingDiffuse.initTexture("resources/textures/tiefWingDiffuse.png");
     imgTiefWingSpecular.initTexture("resources/textures/tiefWingSpecular.png");
     imgBodyDiffuseTief.initTexture("resources/textures/tiefBodyDiffuse.png");
     imgTiefWingNormal.initTexture("resources/textures/tiefWingNormal.png");
     imgWindow.initTexture("resources/textures/tiefWindow.png");
 
-    // Baby Yoda Hologram
+    // T_Baby Yoda Hologram
     imgDiffuseHologram.initTexture("resources/textures/diffuseSphereHologramBase.png");
     imgSpecularHologram.initTexture("resources/textures/specularHologramBase.png");
     imgSpecularLightnings.initTexture("resources/textures/specularLightings.png");
@@ -496,7 +522,7 @@ void funInit() {
     imgSpecularWater.initTexture("resources/textures/specularWater.png");
     imgNormalWater.initTexture("resources/textures/normalWater.png");
 
-    // Docker
+    // T_Docker
     imgDiffuseDocker.initTexture("resources/textures/diffuseDocker.png");
     imgEmissiveDocker.initTexture("resources/textures/emissiveDocker.png");
     imgNormalMap.initTexture("resources/textures/normalMap.png");
@@ -647,11 +673,23 @@ void funInit() {
     texPedestal.normal = 0;
     texPedestal.shininess = 10.0;
 
-    // We'll add a value to the diffuse component later
-    texOrbs.specular = imgSpecularWater.getTexture();
-    texOrbs.emissive = imgNoEmissive.getTexture();
-    texOrbs.normal = imgNormalWater.getTexture();
-    texOrbs.shininess = 10.0;
+    texOrbBlue.diffuse = imgDiffuseWaterBlue.getTexture();
+    texOrbBlue.specular = imgSpecularWater.getTexture();
+    texOrbBlue.emissive = imgNoEmissive.getTexture();
+    texOrbBlue.normal = imgNormalWater.getTexture();
+    texOrbBlue.shininess = 10.0;
+
+    texOrbOrange.diffuse = imgDiffuseWaterOrange.getTexture();
+    texOrbOrange.specular = imgSpecularWater.getTexture();
+    texOrbOrange.emissive = imgNoEmissive.getTexture();
+    texOrbOrange.normal = imgNormalWater.getTexture();
+    texOrbOrange.shininess = 10.0;
+
+    texOrbPurple.diffuse = imgDiffuseWaterPurple.getTexture();
+    texOrbPurple.specular = imgSpecularWater.getTexture();
+    texOrbPurple.emissive = imgNoEmissive.getTexture();
+    texOrbPurple.normal = imgNormalWater.getTexture();
+    texOrbPurple.shininess = 10.0;
 
     // Docker
     texDocker.diffuse = imgDiffuseDocker.getTexture();
@@ -817,22 +855,19 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     // This light rotates clockwise and it's the closer one
     lightP[0].position = glm::vec3(0.75 * glm::sin(glm::radians(holoRotating+1.0)), levitatingLights, 0.75 * glm::cos(glm::radians(holoRotating+1.0)));
     glm::mat4 M = glm::translate(I,lightP[0].position) * glm::scale(I,glm::vec3(0.1));
-    texOrbs.diffuse = imgDiffuseWaterBlue.getTexture();
-    drawObjectTex(sphere,texOrbs,P,V,M);
+    drawObjectTex(sphere, texOrbBlue, P, V, M);
 
     // This light rotates counter-clock wise and goes up when the other goes down and vice versa and it's the farest one
     lightP[1].position = glm::vec3(1.5 * glm::sin(-glm::radians(holoRotating+2.0)), 3.5-levitatingLights, 1.5 * glm::cos(-glm::radians(holoRotating+2.0)));
     M = glm::translate(I,lightP[1].position) * glm::scale(I,glm::vec3(0.1));
-    texOrbs.diffuse = imgDiffuseWaterOrange.getTexture();
-    drawObjectTex(sphere,texOrbs,P,V,M);
+    drawObjectTex(sphere, texOrbOrange, P, V, M);
 
     // This lights rotates the same as the light 1 but: We first calculate the rotation movement for the 3rd light in light_2Rotation
     // Secondly, we apply a 45 degrees of the axis for the rotation, and that value will be the value for the lightP[3]'s position
     glm::vec3 light_2Rotation = glm::vec3(1.0 + glm::sin(-glm::radians(holoRotating+2.0)), 1.0, glm::cos(-glm::radians(holoRotating+2.0)));
     lightP[2].position = glm::rotate(I, glm::radians(45.0f), glm::vec3(0, 0, 1)) * glm::vec4(light_2Rotation, 1.0);
     M = glm::translate(I,lightP[2].position) * glm::scale(I,glm::vec3(0.1));
-    texOrbs.diffuse = imgDiffuseWaterPurple.getTexture();
-    drawObjectTex(sphere,texOrbs,P,V,M);
+    drawObjectTex(sphere, texOrbPurple, P, V, M);
 
     // FOCAL LIGHTS ----
     // Death Star Light
@@ -1600,7 +1635,7 @@ void animateModel(unsigned char key, int x, int y) {
             }
             break;
 
-        // Light Animations
+        // Light and Texture Animations
         case 'l':
         case 'L':
             if (selectedModel[0]) {
@@ -1670,17 +1705,49 @@ void animateModel(unsigned char key, int x, int y) {
                     lightP[i] = savedLightP[i];
             }
             break;
-        case 'm':
         case 'M':
+        case 'm':
+            texActHolo = !texActHolo;
+            if (!texActHolo) {  // Turn off the material for babyYoda and textures of Orbs
+                // Define a texture without values and the material of babyYoda but totally transparent
+                Textures  noTex;
+
+                savedHolo= matHolo;
+                savedTex[0] = texOrbBlue;
+                savedTex[1] = texOrbOrange;
+                savedTex[2] = texOrbPurple;
+
+                matHolo.ambient[3] = 0.0f;
+                matHolo.diffuse[3] = 0.0f;
+                matHolo.specular[3] = 0.0f;
+                matHolo.emissive[3] = 0.0f;
+                texOrbBlue = noTex;
+                texOrbOrange = noTex;
+                texOrbPurple = noTex;
+            } else {
+                // Turn on the material for babyYoda and textures of Orbs
+                matHolo= savedHolo;
+                texOrbBlue = savedTex[0];
+                texOrbOrange = savedTex[1];
+                texOrbPurple = savedTex[2];
+            }
+            break;
+        case 'T':
+        case 't':
+            if (selectedModel[1]) {  // It will only work when we are on the BattleShip
+                texActBattleShip = !texActBattleShip;
+                if (!texActBattleShip) {  // Turn off the textures of BattleShip
+                    texBattleshipBody.diffuse = imgDiffuseBattleshipAlternative.getTexture();
+                    texBattleshipHead.diffuse = imgDiffuseBattleshipAlternative.getTexture();
+                } else {
+                    // Turn on the textures of BattleShip
+                    texBattleshipBody.diffuse = imgDiffuseBattleship.getTexture();
+                    texBattleshipHead.diffuse = imgDiffuseBattleshipHead.getTexture();
+                }
+            }
             break;
 
         // Death Star Animations
-        case 'u':
-            if (selectedModel[0]) deathStarMovY -= 0.1;
-            break;
-        case 'U':
-            if (selectedModel[0]) deathStarMovY += 0.1;
-            break;
         case 'd':
             if (selectedModel[0]) deathStarOrientateYTOP += 5;
             break;
