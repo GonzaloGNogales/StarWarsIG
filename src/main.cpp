@@ -169,6 +169,10 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     Texture imgDiffuseXFighterBody;
     Texture imgSpecularXFighterWing;
     Texture imgSpecularXFighterBody;
+    Texture imgDiffuseXFighterAlternative;
+    Texture imgSpecularXFighterAlternative;
+    Texture imgEmissiveXFighterAlternative;
+    Texture imgNormalXFighterAlternative;
 
     Texture imgDiffuseBigCamera;
     Texture imgDiffuseHeadR2D2;
@@ -300,6 +304,7 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     float xFighterMovZ = 5.6;
     float xFighterOrientateY = 180.0;
     float xFighterWingAperture = 15.0;
+    bool texActXFighter = true;
 
  // R2D2 animation variables
     float r2d2MovX = 3.9;
@@ -499,6 +504,10 @@ void funInit() {
     imgDiffuseXFighterBody.initTexture("resources/textures/diffuseXFighterBody.png");
     imgSpecularXFighterWing.initTexture("resources/textures/specularXFighterWing.png");
     imgSpecularXFighterBody.initTexture("resources/textures/specularXFighterBody.png");
+    imgDiffuseXFighterAlternative.initTexture("resources/textures/diffuseXFighterAlternative.png");
+    imgSpecularXFighterAlternative.initTexture("resources/textures/specularXFighterAlternative.png");
+    imgEmissiveXFighterAlternative.initTexture("resources/textures/emissiveXFighterAlternative.png");
+    imgNormalXFighterAlternative.initTexture("resources/textures/normalXFighterAlternative.png");
 
     // T_R2D2
     imgDiffuseBigCamera.initTexture("resources/textures/diffuseBigCameraR2D2.png");
@@ -1729,8 +1738,8 @@ void animateModel(unsigned char key, int x, int y) {
                     lightP[i] = savedLightP[i];
             }
             break;
-        case 'M':
         case 'm':
+        case 'M':
             texActHolo = !texActHolo;
             if (!texActHolo) {  // Turn off the material for babyYoda and textures of Orbs
                 // Define a texture without values and the material of babyYoda but totally transparent
@@ -1756,8 +1765,8 @@ void animateModel(unsigned char key, int x, int y) {
                 texOrbPurple = savedTex[2];
             }
             break;
-        case 'T':
         case 't':
+        case 'T':
             if (selectedModel[1]) {  // It will only work when we are on the BattleShip
                 texActBattleShip = !texActBattleShip;
                 if (!texActBattleShip) {  // Turn off the textures of BattleShip
@@ -1767,6 +1776,34 @@ void animateModel(unsigned char key, int x, int y) {
                     // Turn on the textures of BattleShip
                     texBattleshipBody.diffuse = imgDiffuseBattleship.getTexture();
                     texBattleshipHead.diffuse = imgDiffuseBattleshipHead.getTexture();
+                }
+            }
+            if (selectedModel[2]) {  // It will only work when we are on the XFighter
+                texActXFighter = !texActXFighter;
+                if (!texActXFighter) {  // Change the textures of XFighter
+                    texXFighterWing.diffuse = imgDiffuseXFighterAlternative.getTexture();
+                    texXFighterWing.specular = imgSpecularXFighterAlternative.getTexture();
+                    texXFighterWing.emissive = imgNoEmissive.getTexture();
+                    texXFighterWing.normal = imgNormalXFighterAlternative.getTexture();
+                    texXFighterWing.shininess = 10.0;
+
+                    texXFighterBody.diffuse = imgDiffuseXFighterAlternative.getTexture();
+                    texXFighterBody.specular = imgSpecularXFighterAlternative.getTexture();
+                    texXFighterBody.emissive = imgNoEmissive.getTexture();
+                    texXFighterBody.normal = imgNormalXFighterAlternative.getTexture();
+                    texXFighterBody.shininess = 10.0;
+                } else {  // Turn back the original textures
+                    texXFighterWing.diffuse = imgDiffuseXFighterWing.getTexture();
+                    texXFighterWing.specular = imgSpecularXFighterBody.getTexture();
+                    texXFighterWing.emissive = imgNoEmissive.getTexture();
+                    texXFighterWing.normal = 0;
+                    texXFighterWing.shininess = 10.0;
+
+                    texXFighterBody.diffuse = imgDiffuseXFighterBody.getTexture();
+                    texXFighterBody.specular = imgSpecularXFighterBody.getTexture();
+                    texXFighterBody.emissive = imgNoEmissive.getTexture();
+                    texXFighterBody.normal = 0;
+                    texXFighterBody.shininess = 10.0;
                 }
             }
             break;
