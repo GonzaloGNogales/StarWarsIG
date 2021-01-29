@@ -289,6 +289,9 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     float battleshipMovY = 0.0;
     float battleshipMovZ = 8.8;
     float battleshipOrientateY = 180.0;
+    float battleshipDownLeg = 0.0;
+    float battleshipDownBody = 0.0;
+    float battleshipRotHead = 0.0;
     bool texActBattleShip = true;
 
  // X-Fighter animation variables
@@ -380,7 +383,7 @@ int main(int argc, char** argv) {
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(w,h);
-    glutInitWindowPosition(425,150);
+    glutInitWindowPosition(200,100);
     glutCreateWindow("Final Practice");
 
     // GLEW init
@@ -875,7 +878,7 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     lightF[0].direction = glm::vec3(glm::sin(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)), 0.0, glm::cos(glm::radians(deathStarOrientateYTOP+deathStarOrientateY)));
 
     // X-Fighter Light
-    lightF[1].position = glm::vec3(2.1*glm::sin(glm::radians(xFighterOrientateY))+xFighterMovX, xFighterMovY,2.1*glm::cos(glm::radians(xFighterOrientateY))+xFighterMovZ);
+    lightF[1].position = glm::vec3(2.05*glm::sin(glm::radians(xFighterOrientateY))+xFighterMovX, xFighterMovY,2.05*glm::cos(glm::radians(xFighterOrientateY))+xFighterMovZ);
     lightF[1].direction = glm::vec3(glm::sin(glm::radians(xFighterOrientateY)), 0.0, glm::cos(glm::radians(xFighterOrientateY)));
 
     // Tie Fighter Light
@@ -1002,9 +1005,10 @@ void drawBattleshipLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 R180_x = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 0));
     glm::mat4 T_joint = glm::translate(I, glm::vec3(0.0, 2.0, 0.0));
     glm::mat4 S = glm::scale(I, glm::vec3(1.5, 0.9, 1.5));
+    glm::mat4 T_UpToDown = glm::translate(I, glm::vec3(0.0, battleshipDownLeg, 0.0));
     drawBattleshipUnderLeg(P,V,M);
-    drawBattleshipCalf(P,V,M*T_calf*R180_x);
-    drawBattleshipJoint(P,V,M*T_joint*S);
+    drawBattleshipCalf(P,V,M*T_UpToDown*T_calf*R180_x);
+    drawBattleshipJoint(P,V,M*T_UpToDown*T_joint*S);
 
 }
 
@@ -1037,10 +1041,11 @@ void drawBattleshipUp(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 T_back = glm::translate(I, glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 T_head = glm::translate(I, glm::vec3(0.0, 0.0, 2.0));
     glm::mat4 R180_y = glm::rotate(I, glm::radians(180.0f), glm::vec3(0, 1, 0));
+    glm::mat4 RHead = glm::rotate(I, glm::radians(battleshipRotHead), glm::vec3(0, 0, 1));
     drawBattleshipBodyAux(P,V,M*T_front);
     drawBattleshipBodyAux(P,V,M*T_back*R180_y);
     drawBattleshipBody(P,V,M);
-    drawBattleshipHead(P,V,M*T_head);
+    drawBattleshipHead(P,V,M*T_head*RHead);
 
 }
 
@@ -1057,7 +1062,10 @@ void drawBattleship(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 T_leg3 = glm::translate(I, glm::vec3(-1.15, 0.0, 0.55));
     glm::mat4 T_leg4 = glm::translate(I, glm::vec3(-1.15, 0.0, -0.55));
 
-    drawBattleshipUp(P,V,M*T*R_y*T_up);
+    // Animations
+    glm::mat4 T_UpToDown = glm::translate(I, glm::vec3(0.0, battleshipDownBody, 0.0));
+
+    drawBattleshipUp(P,V,M*T_UpToDown*T*R_y*T_up);
     drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg1);
     drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg2);
     drawBattleshipLeg(P,V,M*T*R_y*R90_y*T_leg3);
@@ -1193,11 +1201,14 @@ void drawR2D2Base(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawR2D2Top(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     // Head transformation matrix
-    glm::mat4 TH = glm::translate(I, glm::vec3(0.0, 0.82, 0.1));
+    glm::mat4 TH = glm::translate(I, glm::vec3(0.0, 0.83, 0.105));
     glm::mat4 SH = glm::scale(I, glm::vec3(0.16, 0.14, 0.16));
     // Head Animation --> head rotating (looking side to side)
     glm::mat4 RH = glm::rotate(I, glm::radians(r2d2TurnHead), glm::vec3(0.0, 1.0, 0.0));
+    //Apply Offset so there's not Z-fighting between the head and the body
+    glEnable(GL_POLYGON_OFFSET_FILL);
     drawR2D2Head(P, V, M * TH * RH * SH);
+    glDisable(GL_POLYGON_OFFSET_FILL);
 
     // Body transformation matrix
     glm::mat4 TB = glm::translate(I, glm::vec3(0.0, 0.25, 0.095));
@@ -1226,8 +1237,8 @@ void drawR2D2(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     // Draws the left arm applicating a negative scale in the X axis
     glm::mat4 RArmInverse = glm::rotate(I, glm::radians(-180.0f), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 TArmInverse = glm::translate(I, glm::vec3(0.28, 0.0, 0.2));
-    drawR2D2Arm(P,V,M*Tr2d2*Rr2d2Y*RArmInverse*TArmInverse);
+    glm::mat4 TArmInverse = glm::translate(I, glm::vec3(-0.28, 0.0, -0.187));
+    drawR2D2Arm(P,V,M*Tr2d2*Rr2d2Y*TArmInverse*RArmInverse);
 
 }
 
@@ -1756,7 +1767,32 @@ void animateModel(unsigned char key, int x, int y) {
             break;
 
         // Battleship Animations
-        if (selectedModel[1]) {}
+        case 'b':
+            if (selectedModel[1]) {
+                if (battleshipDownBody > -1.5) {
+                    battleshipDownBody -= 0.1;
+                    battleshipDownLeg -= 0.1;
+                }
+            }
+            break;
+        case 'B':
+            if (selectedModel[1]) {
+                if (battleshipDownBody < 0.0) {
+                    battleshipDownBody += 0.1;
+                    battleshipDownLeg += 0.1;
+                }
+            }
+            break;
+        case 'r':
+            if (selectedModel[1]) {
+                if (battleshipRotHead < 45) battleshipRotHead += 3;
+            }
+            break;
+        case 'R':
+            if (selectedModel[1]) {
+                if (battleshipRotHead > -45) battleshipRotHead -= 3;
+            }
+            break;
 
         // X-Fighter Animations
         case 'x':

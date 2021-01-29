@@ -3,14 +3,14 @@
 cmake_policy(SET CMP0009 NEW)
 
 # SRC_FILES at CMakeLists.txt:12 (file)
-file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/*.cpp")
+file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "C:/Users/gonza/Desktop/LAST MODS IG/StarWarsIG/src/*.cpp")
 set(OLD_GLOB
-  "C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Model.cpp"
-  "C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Shaders.cpp"
-  "C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/Texture.cpp"
-  "C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/src/main.cpp"
+  "C:/Users/gonza/Desktop/LAST MODS IG/StarWarsIG/src/Model.cpp"
+  "C:/Users/gonza/Desktop/LAST MODS IG/StarWarsIG/src/Shaders.cpp"
+  "C:/Users/gonza/Desktop/LAST MODS IG/StarWarsIG/src/Texture.cpp"
+  "C:/Users/gonza/Desktop/LAST MODS IG/StarWarsIG/src/main.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
-  file(TOUCH_NOCREATE "C:/Users/gonza/Desktop/IG PRAC/StarWarsIG/cmake-build-debug/CMakeFiles/cmake.verify_globs")
+  file(TOUCH_NOCREATE "C:/Users/gonza/Desktop/LAST MODS IG/StarWarsIG/cmake-build-debug/CMakeFiles/cmake.verify_globs")
 endif()
