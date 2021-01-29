@@ -951,6 +951,7 @@ void drawDeathStar(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipFoot(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Scale and Translate the battleship solid foot piece
     glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.9, 0.0));
     drawObjectTex(battleshipFoot,texBattleshipBody,P,V,M*S*T);
@@ -959,6 +960,7 @@ void drawBattleshipFoot(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipJoint(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Draws joint for joining calf and foot
     glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.7, 0.0));
     drawObjectTex(battleshipJoint,texBattleshipBody,P,V,M*S*T);
@@ -967,6 +969,7 @@ void drawBattleshipJoint(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipCalf(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Transform the Calf to it's right place on the overall model scheme
     glm::mat4 S = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 5.5, 0.0));
     glm::mat4 R180_xz = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 1));
@@ -1001,6 +1004,7 @@ void drawBattleshipUnderLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Transformates with several matrix the under leg the calf and the joint over them to connect the leg to the body
     glm::mat4 T_calf = glm::translate(I, glm::vec3(0.0, 3.0, 0.0));
     glm::mat4 R180_x = glm::rotate(I, glm::radians(180.0f), glm::vec3(1, 0, 0));
     glm::mat4 T_joint = glm::translate(I, glm::vec3(0.0, 2.0, 0.0));
@@ -1014,6 +1018,7 @@ void drawBattleshipLeg(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipBodyAux(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Scales the back part of the body half it size and draws it in the scene
     glm::mat4 S = glm::scale(I, glm::vec3(0.485, 0.485, 0.485));
     drawObjectTex(battleshipBodyAux,texBattleshipBody,P,V,M*S);
 
@@ -1021,6 +1026,7 @@ void drawBattleshipBodyAux(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Draws the solid battleship body model after scaling it half it size
     glm::mat4 S = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
     drawObjectTex(battleshipBody,texBattleshipBody,P,V,M*S);
 
@@ -1028,6 +1034,7 @@ void drawBattleshipBody(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleshipHead(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // The head is a solid piece so this function only scales rotates and translates it to the right place
     glm::mat4 S = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
     glm::mat4 R90_y = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 1, 0));
     glm::mat4 T_y = glm::translate(I, glm::vec3(0.0, -0.3, 0.0));
@@ -1051,12 +1058,15 @@ void drawBattleshipUp(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawBattleship(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Translation and Rotation animation matrix
     glm::mat4 T = glm::translate(I, glm::vec3(battleshipMovX, battleshipMovY, battleshipMovZ));
     glm::mat4 R_y = glm::rotate(I, glm::radians(battleshipOrientateY), glm::vec3(0, 1, 0));
 
+    // Upper battleship body placing matrix
     glm::mat4 T_up = glm::translate(I, glm::vec3(0.0, 3.1, 0.0));
     glm::mat4 R90_y = glm::rotate(I, glm::radians(90.0f), glm::vec3(0, 1, 0));
 
+    // Translation of the legs of the battleship
     glm::mat4 T_leg1 = glm::translate(I, glm::vec3(1.15, 0.0, 0.55));
     glm::mat4 T_leg2 = glm::translate(I, glm::vec3(1.15, 0.0, -0.55));
     glm::mat4 T_leg3 = glm::translate(I, glm::vec3(-1.15, 0.0, 0.55));
@@ -1115,6 +1125,7 @@ void drawXFighterEngines(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawXFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Rotation and Translation matrix for moving the X Fighter around
     glm::mat4 R = glm::rotate(I, glm::radians(xFighterOrientateY), glm::vec3(0, 1, 0));
     glm::mat4 T = glm::translate(I, glm::vec3(xFighterMovX, xFighterMovY, xFighterMovZ));
     drawXFighterEngines(P,V,M*T*R);
@@ -1424,7 +1435,7 @@ void drawTieFighter(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 RL90 = glm::rotate(I, glm::radians(-90.0f), glm::vec3(1.0,0.0,0.0));
     glm::mat4 TLArm = glm::translate(I, glm::vec3(0.0, 0.0, -0.35));
 
-    // Inversed arm transformation matrix
+    // Reversed arm transformation matrix
     glm::mat4 Rinverse = glm::rotate(I, glm::radians(-180.0f), glm::vec3 (1.0, 0.0, 0.0));
 
     drawTieFighterArm(P,V,M*T*RtiefY*RtiefUpDown*R*TLArm*RL90);
@@ -1555,6 +1566,7 @@ void hologramAutoRotation(int value) {
 
 void cameraZoom(int key, int status, int x, int y) {
 
+    // FOV modification with the mose wheel
     switch (key) {
         case 4:
             if (zoom < 120) zoom += 1;
@@ -1577,6 +1589,7 @@ void cameraMovement(int x, int y) {
     int px2degX = ax * 180 / w;
     int px2degY = ay * 90 / (h/2);
 
+    // Control conditional structure to move the camera around each selected model
     if (selectedModel[0]) {
         if(px2degX < 180 && px2degX > -180) alphaXDeathStar = px2degX;
         if(px2degY < 90 && px2degY > -90) alphaYDeathStar = -px2degY;
@@ -1877,7 +1890,7 @@ void changeIntensity() {
 
 void modelMovementAndSelection(int key, int x, int y) {
 
-    // Reset alphaX and alphaY with stored values
+    // Reset alphaX and alphaY with stored values in each buffer
     if (selectedModel[0]) {
         alphaXDeathStar = bufferAlphaXDeathStar;
         alphaYDeathStar = bufferAlphaYDeathStar;
@@ -1901,6 +1914,7 @@ void modelMovementAndSelection(int key, int x, int y) {
     keyStates[key] = true;
 
     switch (key) {
+        // Move forwards selected model
         case GLUT_KEY_UP:
             if (selectedModel[0]) {
                 moveDeathStar(0.4);
@@ -1923,6 +1937,8 @@ void modelMovementAndSelection(int key, int x, int y) {
                 cameraRepositioning(tieFighterMovX, tieFighterMovY, tieFighterMovZ, alphaXTieFighter, alphaYTieFighter);
             }
             break;
+
+        // Move backwards selected model
         case GLUT_KEY_DOWN:
             if (selectedModel[0]) {
                 moveDeathStar(-0.2);
@@ -1945,6 +1961,8 @@ void modelMovementAndSelection(int key, int x, int y) {
                 cameraRepositioning(tieFighterMovX,tieFighterMovY,tieFighterMovZ,alphaXTieFighter,alphaYTieFighter);
             }
             break;
+
+        // Rotate right selected model and if up is being pressed move it forwards at the same time too
         case GLUT_KEY_RIGHT:
             if (selectedModel[0]) {
                 if (!centerAtOrigin) alphaXDeathStar -= 5;
@@ -1992,6 +2010,8 @@ void modelMovementAndSelection(int key, int x, int y) {
                 }
             }
             break;
+
+        // Rotate left selected model and if up is being pressed move it forwards at the same time too
         case GLUT_KEY_LEFT:
             if (selectedModel[0]) {
                 if (!centerAtOrigin) alphaXDeathStar += 5;
@@ -2048,7 +2068,7 @@ void modelMovementAndSelection(int key, int x, int y) {
                         selectedModel[0] = true;
                     }
                 }
-            } else if (centerAtOrigin) {
+            } else if (centerAtOrigin) {  // Check if the camera was centered at origin (looking at it)
                 selectedModel[0] = true;
                 centerAtOrigin = false;
             }
@@ -2132,7 +2152,7 @@ void modelMovementAndSelection(int key, int x, int y) {
             break;
     }
 
-    // Save alphaX and alphaY in the buffer
+    // Save alphaX and alphaY in the buffer for restoring it later
     if (selectedModel[0]) {
         bufferAlphaXDeathStar = alphaXDeathStar;
         bufferAlphaYDeathStar = alphaYDeathStar;
@@ -2159,6 +2179,7 @@ void modelMovementAndSelection(int key, int x, int y) {
 
 void modelMovementExtra(int key, int x, int y) {
 
+    // Detects when a key is not pressed anymore (Used for moving forwards and rotating in some dir. at the same time)
     keyStates[key] = false;
     glutPostRedisplay();
 
@@ -2201,9 +2222,11 @@ void moveTieFighter(float movement) {
 
 void cameraRepositioning(float x, float y, float z, float alpha_x, float alpha_y) {
 
+    // Center the camera to the selected model position
     center_x = x;
     center_y = y;
     center_z = z;
+    // Position de camera eye with a relative offset to the new center
     eye_x = x+(-5.0f*glm::cos(glm::radians(alpha_y))*glm::sin(glm::radians(alpha_x)));
     if (selectedModel[3] || selectedModel[1] || selectedModel[0])
         eye_y = (y+5.0f)+(-5.0f*glm::sin(glm::radians(alpha_y)));
@@ -2214,6 +2237,7 @@ void cameraRepositioning(float x, float y, float z, float alpha_x, float alpha_y
 
 void cameraCenter() {
 
+    // Camera eye position when pointing to the origin of the scene
     eye_x = -5.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
     eye_y = -5.0f*glm::sin(glm::radians(alphaY));
     eye_z = -5.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
