@@ -97,6 +97,7 @@ void drawBabyYodaHologram(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 // Terrain-Scenario Model Functions Headers
 void drawDocker(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBackground(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 
  // Shaders variable
@@ -104,6 +105,7 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
  // Model variables
  // Terrain Scenario
+    Model background;
     Model docker;
     Model dockerWindow;
     Model dockerGatewayUp;
@@ -196,9 +198,11 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     Texture imgSpecularWater;
     Texture imgNormalWater;
 
+    Texture imgBackground;
     Texture imgNormalMap;
-    Texture imgEmissiveDocker;
     Texture imgDiffuseDocker;
+    Texture imgEmissiveDocker;
+    Texture imgNormalDocker;
     Texture imgDiffuseDockerGatewayUp;
     Texture imgDiffuseDockerGatewayDown;
     Texture imgSpecularDockerGatewayUp;
@@ -268,6 +272,9 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     Textures  texDockerGatewayUp;
     Textures  texDockerGatewayDown;
 
+    // Background
+    Textures texBackground;
+
  // Viewport variables
     int w = 1024;
     int h = 768;
@@ -280,6 +287,7 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M);
     // selectTieFighter -> [4]
     bool selectedModel[N_MODELS];
     bool keyStates[256];
+    bool texturesACT = true;
 
  // Death Star animation variables
     float deathStarMovX = 15.5;
@@ -480,6 +488,7 @@ void funInit() {
     holoPedestal.initModel("resources/models/HoloPedestal.obj");
 
     // M_Docker
+    background.initModel("resources/models/CubeBackground.obj");
     docker.initModel("resources/models/Docker.obj");
     dockerWindow.initModel("resources/models/DockerWindow.obj");
     dockerGatewayUp.initModel("resources/models/DockerGatewayUp.obj");
@@ -535,8 +544,10 @@ void funInit() {
     imgNormalWater.initTexture("resources/textures/normalWater.png");
 
     // T_Docker
+    imgBackground.initTexture("resources/textures/diffuseBackground.png");
     imgDiffuseDocker.initTexture("resources/textures/diffuseDocker.png");
     imgEmissiveDocker.initTexture("resources/textures/emissiveDocker.png");
+    imgNormalDocker.initTexture("resources/textures/normalDocker.png");
     imgNormalMap.initTexture("resources/textures/normalMap.png");
     imgDiffuseDockerGatewayUp.initTexture("resources/textures/diffuseDockerGatewayUp.png");
     imgDiffuseDockerGatewayDown.initTexture("resources/textures/diffuseDockerGatewayDown.png");
@@ -722,6 +733,12 @@ void funInit() {
     texDockerGatewayDown.normal = 0;
     texDockerGatewayDown.shininess = 10.0;
 
+    texBackground.diffuse = imgBackground.getTexture();
+    texBackground.specular = imgBackground.getTexture();
+    texBackground.emissive = imgBackground.getTexture();
+    texBackground.normal = 0;
+    texBackground.shininess = 10.0;
+
     // Global Ambient Light
     lightG.ambient = glm::vec3(0.4, 0.4, 0.4);
 
@@ -837,6 +854,7 @@ void funDisplay() {
     setLights(P,V);
 
     // Draw the scene
+    drawBackground(P,V,I);
     glEnable(GL_CULL_FACE);
     drawDeathStar(P,V,I);
     drawBattleship(P,V,I);
@@ -903,25 +921,49 @@ void setLights(glm::mat4 P, glm::mat4 V) {
 
 void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
-    shaders.setMat4("uM"  ,M);
-    shaders.setMat4("uPVM",P*V*M);
-    shaders.setBool("uWithMaterials",true);
-    shaders.setMaterial("umaterial",material);
-    model.renderModel(GL_FILL);
+    if (texturesACT) {
+        shaders.setMat4("uN", glm::transpose(glm::inverse(M)));
+        shaders.setMat4("uM", M);
+        shaders.setMat4("uPVM", P * V * M);
+        shaders.setBool("uWithMaterials", true);
+        shaders.setMaterial("umaterial", material);
+        model.renderModel(GL_FILL);
+    } else {
+        shaders.setMat4("uPVM",P*V*M);
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        shaders.setVec3("uColor",glm::vec3(0, 0, 0));
+        model.renderModel(GL_FILL);
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        shaders.setVec3("uColor",glm::vec3(1, 1, 1));
+        model.renderModel(GL_LINE);
+    }
 
 }
 
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
-    shaders.setMat4("uM"  ,M);
-    shaders.setMat4("uPVM",P*V*M);
-    shaders.setBool("uWithMaterials", false);
-    shaders.setTextures("utextures",textures);
-    if(textures.normal!=0) shaders.setBool("uWithNormals",true);
-    else                   shaders.setBool("uWithNormals",false);
-    model.renderModel(GL_FILL);
+    if (texturesACT) {
+        shaders.setMat4("uN", glm::transpose(glm::inverse(M)));
+        shaders.setMat4("uM", M);
+        shaders.setMat4("uPVM", P * V * M);
+        shaders.setBool("uWithMaterials", false);
+        shaders.setTextures("utextures", textures);
+        if (textures.normal != 0) shaders.setBool("uWithNormals", true);
+        else shaders.setBool("uWithNormals", false);
+        model.renderModel(GL_FILL);
+    } else {
+        shaders.setMat4("uPVM",P*V*M);
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        shaders.setVec3("uColor",glm::vec3(0, 0, 0));
+        model.renderModel(GL_FILL);
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        shaders.setVec3("uColor",glm::vec3(1, 1, 1));
+        model.renderModel(GL_LINE);
+    }
 
 }
 
@@ -1537,6 +1579,13 @@ void drawDockerWindow(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 }
 
+void drawBackground(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    glm::mat4 S = glm::scale(I, glm::vec3(50.0, 50.0, 50.0));
+    drawObjectTex(background,texBackground,P,V,M*S);
+
+}
+
 
 // ----------------------------------------------      Animation Functions     ----------------------------------------------
 
@@ -1669,6 +1718,10 @@ void animateModel(unsigned char key, int x, int y) {
             break;
 
         // Light and Texture Animations
+        case 'u':
+        case 'U':
+            texturesACT = !texturesACT;
+            break;
         case 'l':
         case 'L':
             if (selectedModel[0]) {
